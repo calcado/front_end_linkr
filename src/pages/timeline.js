@@ -1,21 +1,35 @@
 import styled from "styled-components"
 import { useState } from "react"
+import {posttrending} from "../request/request"
 
 export default function Timeline() {
 
 const [url,seturl] = useState();
 const [description,setdescription] = useState();
+const [loading,setloading] = useState(true);
 
 function senttrack(){
-alert(url)
-console.log(description)
+    setloading(false)
+    if (!url || url.length < 3 ){
+        alert("Obrigatório colocar uma url valida!")
+        setloading(true)
+        return
+    }
+   let envio = {url,description}
+   let send = posttrending(envio)
+   send.then((ref)=>{
+    setloading(true);
+    seturl();
+    setdescription();
+    ///atualizar a pagina timelines
+   })
+   send.catch(()=>{
+    alert("Houve um erro ao publicar seu link")
+    setloading(true)
+   })
 
 }
-  function handleForm({ value }) {
-
-     seturl(value)
  
-    };
     const exemplos = [{ name: "Cledson", comentario: "Olha que site daoraaaa", url: "https://www.globo.com/" }, { name: "Cledson2", comentario: "Olha que site daoraaaa e segundooooooo ", url: "https://www.globoesporte.com/" }]
 
     
@@ -29,13 +43,13 @@ console.log(description)
                     <img src={url}></img>
                     <div>
                         What are you going to share today?
-                        <Link  onChange={(e) => {seturl(e.target.value )}} placeholder="http://...">
+                        <Link value={url? url: ""} disabled={!loading} onChange={(e) => {seturl(e.target.value )}} placeholder="http://...">
 
                         </Link>
-                        <Description onChange={(e) => {setdescription(e.target.value )}} placeholder="Awesome article about #javascript"></Description>
+                        <Description value={description? description: ""} disabled={!loading} onChange={(e) => {setdescription(e.target.value )}} placeholder="Awesome article about #javascript"></Description>
                         <footer>
-                            <Button onClick={() => senttrack()}>
-                                Publish
+                            <Button disabled={!loading} onClick={() => {senttrack()}}>
+                               {loading === true ? "Publish" : "Publishing..."}
                             </Button>
                         </footer>
                     </div>
