@@ -1,9 +1,26 @@
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
+import useState from "react"
+import axios from "axios"
+import BASE_URL from "./constants.js"
 
-export default function SignIn () {
+export default function SignIn ({setToken, setPicture}) {
 
     const navigate = useNavigate()
+    const [email, setEmail] = useState()
+    const [password, setPassword] = useState()
+
+    function login (event) {
+        event.preventDefault()
+
+        axios.post(`${BASE_URL}/signin`,{email:email, password: password})
+            .then((ans) => {
+                setToken(ans.data.token)
+                setPicture(ans.data.urlPicture)
+            })
+            .catch((ans) => console.log(ans))
+
+    }
 
     return (
         <Container>
@@ -15,9 +32,9 @@ export default function SignIn () {
                 </Title>
             </Logo>
             <Login>
-                <form>
-                    <input placeholder="e-mail"/>
-                    <input placeholder="password" type="password" />
+                <form onSubmit={login()}>
+                    <input placeholder="e-mail" onChange={e => {setEmail(e.target.value)}} required/>
+                    <input placeholder="password" type="password" onChange={e => {setPassword(e.target.value)}} required/>
                     <button type="submit">Log In</button>
                     <span onClick={() => navigate("/signup")}><br/>First time? Create an account!</span>
                 </form>

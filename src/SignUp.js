@@ -1,9 +1,30 @@
+import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
+import BASE_URL from "./constants"
+import axios from "axios"
 
-export default function SignIn () {
+export default function SignUp () {
 
     const navigate = useNavigate()
+    const [email, setEmail] = useState()
+    const [password, setPassword] = useState()
+    const [userName, setUserName] = useState()
+    const [urlPicture, setUrlPicture] = useState()
+    let deactivate = false
+
+
+    function register (event) {
+        event.preventDefault()
+        deactivate = true
+
+        axios.post(`${BASE_URL}/signup`, {email:email, password: password, userName: userName, urlPicture: urlPicture})
+            .then((ans) => {
+                deactivate = false
+                navigate("/")
+            })
+            .catch((ans) => console.log(ans))
+    }
 
     return (
         <Container>
@@ -14,17 +35,16 @@ export default function SignIn () {
                     the best links on the web  
                 </Title>
             </Logo>
-            <Login>
-                <form>
-                    <input placeholder="e-mail"/>
-                    <input placeholder="password" type="password" />
-                    <input placeholder="username"/>
-                    <input placeholder="picture url"/>
-                    <button type="submit">Log In</button>
+            <Registration>
+                <form onSubmit={register}>
+                    <input placeholder="e-mail" type="email" onChange={e => {setEmail(e.target.value)}} required/>
+                    <input placeholder="password" type="password" onChange={e => {setPassword(e.target.value)}} required/>
+                    <input placeholder="username"onChange={e => {setUserName(e.target.value)}} required/>
+                    <input placeholder="picture url" onChange={e => {setUrlPicture(e.target.value)}}/>
+                    <button type="submit" disabled={deactivate}>Log In</button>
                     <span onClick={() => navigate("/")}><br/>Switch back to log in</span>
-                </form>
-                
-            </Login>
+                </form>        
+            </Registration>
         </Container>
     )
 }
@@ -53,7 +73,7 @@ const Title = styled.div`
     }
 `
 
-const Login = styled.aside`
+const Registration = styled.aside`
     width: 34vw;
     height: 98vh;
     top: 0;
