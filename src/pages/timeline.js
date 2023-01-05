@@ -2,8 +2,8 @@ import styled from "styled-components"
 import { useState } from "react"
 
 export default function Timeline() {
-    
-    
+
+
 
     const exemplos = [{ name: "Cledson", comentario: "Olha que site daoraaaa", url: "https://www.globo.com/" }, { name: "Cledson2", comentario: "Olha que site daoraaaa e segundooooooo ", url: "https://www.globoesporte.com/" }]
 
@@ -18,10 +18,12 @@ export default function Timeline() {
                     <img src={url}></img>
                     <div>
                         What are you going to share today?
-                        <Link></Link>
-                        <Description></Description>
+                        <Link placeholder="http://...">
+
+                        </Link>
+                        <Description placeholder="Awesome article about #javascript"></Description>
                         <footer>
-                            <Button onClick={()=>alert("olaaa")}>
+                            <Button onClick={() => alert("olaaa")}>
                                 Publish
                             </Button>
                         </footer>
@@ -31,8 +33,8 @@ export default function Timeline() {
                     <Publication>
                         <img src={url}></img>
                         <div>
-                           <h1>MEU NOME LINDO</h1> 
-                           <h2>textooooooooooooooooooooooooooooooooooooooooooo</h2>
+                            <h1>MEU NOME LINDO</h1>
+                            <h2>textooooooooooooooooooooooooooooooooooooooooooo</h2>
 
                         </div>
                     </Publication>
@@ -110,6 +112,16 @@ width: 503px;
 height: 30px;
 border-style:none;
 margin-top:5px;
+padding-left:5px;
+::placeholder {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 18px;
+       color: #949494;
+     
+  }
 `
 const Description = styled.input`
 background: #EFEFEF;
@@ -118,6 +130,16 @@ width: 503px;
 height: 66px;
 border-style:none;
 margin-top:5px;
+padding-left:5px;
+::placeholder {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 18px;
+       color: #949494;
+     
+  }
 
 `
 
