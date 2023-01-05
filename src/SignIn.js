@@ -13,6 +13,7 @@ export default function SignIn ({setToken, setPicture}) {
 
     function login (event) {
 
+
         event.preventDefault()
 
         axios.post(`${BASE_URL}/signin`,{email:email, password: password})
