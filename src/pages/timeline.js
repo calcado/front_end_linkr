@@ -198,6 +198,7 @@ width: 503px;
 height: 30px;
 border-style:none;
 margin-top:5px;
+<<<<<<< HEAD
 padding-left:5px;
 ::placeholder {
     font-family: 'Lato';
@@ -208,6 +209,8 @@ padding-left:5px;
        color: #949494;
      
   }
+=======
+>>>>>>> 077c0e0 (falta_o_back)
 `
 const Description = styled.input`
 background: #EFEFEF;
@@ -216,6 +219,7 @@ width: 503px;
 height: 66px;
 border-style:none;
 margin-top:5px;
+<<<<<<< HEAD
 padding-left:5px;
 ::placeholder {
     font-family: 'Lato';
@@ -226,6 +230,8 @@ padding-left:5px;
        color: #949494;
      
   }
+=======
+>>>>>>> 077c0e0 (falta_o_back)
 
 `
 
