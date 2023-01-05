@@ -3,11 +3,22 @@ import { useState } from "react"
 
 export default function Timeline() {
 
+const [url,seturl] = useState();
+const [description,setdescription] = useState();
 
+function senttrack(){
+alert(url)
+console.log(description)
 
+}
+  function handleForm({ value }) {
+
+     seturl(value)
+ 
+    };
     const exemplos = [{ name: "Cledson", comentario: "Olha que site daoraaaa", url: "https://www.globo.com/" }, { name: "Cledson2", comentario: "Olha que site daoraaaa e segundooooooo ", url: "https://www.globoesporte.com/" }]
 
-    const url = "https://photos.google.com/album/AF1QipN4pJZIo4phMmY3bQ6u-E-JawRDUat45tIHlgsF/photo/AF1QipMl75Fjq994juANTK6BQ8KdnZgKZwW-Q1m50KKI";
+    
     return (
         <Container>
             <Trends>
@@ -18,17 +29,17 @@ export default function Timeline() {
                     <img src={url}></img>
                     <div>
                         What are you going to share today?
-                        <Link placeholder="http://...">
+                        <Link  onChange={(e) => {seturl(e.target.value )}} placeholder="http://...">
 
                         </Link>
-                        <Description placeholder="Awesome article about #javascript"></Description>
+                        <Description onChange={(e) => {setdescription(e.target.value )}} placeholder="Awesome article about #javascript"></Description>
                         <footer>
-                            <Button onClick={() => alert("olaaa")}>
+                            <Button onClick={() => senttrack()}>
                                 Publish
                             </Button>
                         </footer>
                     </div>
-                </Publish>
+                </Publish>  
                 <Publications>
                     <Publication>
                         <img src={url}></img>
