@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
-import useState from "react"
+import {useState} from "react"
 import axios from "axios"
 import BASE_URL from "./constants.js"
 
@@ -11,6 +11,7 @@ export default function SignIn ({setToken, setPicture}) {
     const [password, setPassword] = useState()
 
     function login (event) {
+
         event.preventDefault()
 
         axios.post(`${BASE_URL}/signin`,{email:email, password: password})
@@ -32,7 +33,7 @@ export default function SignIn ({setToken, setPicture}) {
                 </Title>
             </Logo>
             <Login>
-                <form onSubmit={login()}>
+                <form onSubmit={login}>
                     <input placeholder="e-mail" onChange={e => {setEmail(e.target.value)}} required/>
                     <input placeholder="password" type="password" onChange={e => {setPassword(e.target.value)}} required/>
                     <button type="submit">Log In</button>
