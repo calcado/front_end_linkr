@@ -11,6 +11,7 @@ export default function SignIn ({setToken, setPicture}) {
     const [password, setPassword] = useState()
 
     function login (event) {
+
         event.preventDefault()
 
         axios.post(`${BASE_URL}/signin`,{email:email, password: password})
