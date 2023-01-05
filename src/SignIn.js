@@ -34,7 +34,7 @@ const Logo = styled.div`
     align-items: center;
     justify-content: center;
     font-family: 'Oswald';
-    font-size: 43px;
+    font-size: 43px; 
     background-color: #151515;
     color: white;
     font-weight: 700;
