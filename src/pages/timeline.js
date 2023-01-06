@@ -1,12 +1,25 @@
 import styled from "styled-components"
-import { useState } from "react"
-import {posttrending} from "../request/request"
+import { useState, useEffect} from "react"
+import {posttrending,gettrending} from "../request/request"
+import imagem from "../empresa.png"
 
 export default function Timeline() {
 
 const [url,seturl] = useState();
 const [description,setdescription] = useState();
 const [loading,setloading] = useState(true);
+const [trending,settrending] = useState();
+const [error,seterror] = useState();
+const [refresh,setrefresh] = useState(true);
+
+useEffect(() => {
+    let answer = gettrending()
+    answer.then((res) => {
+        settrending(res.data)
+        console.log(res.data)
+    });
+    answer.catch(() => seterror("An error ocurred while trying to fetch the posts,please refresh the page"))
+}, [refresh]);
 
 function senttrack(){
     setloading(false)
@@ -15,13 +28,13 @@ function senttrack(){
         setloading(true)
         return
     }
-   let envio = {url,description}
+   let envio = {url,description,userid:1}
    let send = posttrending(envio)
-   send.then((ref)=>{
+   send.then(()=>{
     setloading(true);
     seturl();
     setdescription();
-    ///atualizar a pagina timelines
+    setrefresh(!refresh)
    })
    send.catch(()=>{
     alert("Houve um erro ao publicar seu link")
@@ -40,7 +53,7 @@ function senttrack(){
                     timeline
                 </Tittle>
                 <Publish>
-                    <img src={url}></img>
+                    <img src={imagem}></img>
                     <div>
                         What are you going to share today?
                         <Link value={url? url: ""} disabled={!loading} onChange={(e) => {seturl(e.target.value )}} placeholder="http://...">
@@ -56,10 +69,10 @@ function senttrack(){
                 </Publish>  
                 <Publications>
                     <Publication>
-                        <img src={url}></img>
+                        <img src={imagem}></img>
                         <div>
                             <h1>MEU NOME LINDO</h1>
-                            <h2>textooooooooooooooooooooooooooooooooooooooooooo</h2>
+                            <h2>textooooooooooooooooooooooooooooooooooooooooooo00000000000000000000000000000000000000000</h2>
 
                         </div>
                     </Publication>
@@ -70,8 +83,56 @@ function senttrack(){
 }
 
 const Publications = styled.div`
+margin-top:28px;
 `
 const Publication = styled.div`
+background: #171717;
+width: 611px;
+min-height: 276px;
+border-radius: 16px;
+position:relative;
+display:flex;
+img{
+    position:absolute;
+    width:50px;
+    height:50px;
+    border-radius: 50%;
+    left: 18px;
+    top: 16px;
+}
+div{
+    display:flex;
+    margin-left: 87px;
+    margin-top: 10px;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 24px;
+    color: #707070;
+    max-width:520px;
+    flex-direction: column;
+ 
+}
+h1{
+font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 19px;
+line-height: 23px;
+color: #FFFFFF;
+word-wrap: break-word;
+}
+h2{
+ font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 17px;
+line-height: 20px;
+color: #B7B7B7;
+word-wrap: break-word;
+margin-right:22px;
+}
 `
 const Button = styled.button`
 width: 112px;
