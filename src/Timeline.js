@@ -5,7 +5,9 @@ import BASE_URL from "./constants.js"
 import TopBar from "./TopBar.js"
 
 
-export default function Timeline () {
+
+export default function Timeline1 () {
+
 
     const navigate = useNavigate()
     const token = JSON.parse(localStorage.getItem("token"))
