@@ -1,29 +1,43 @@
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
-import useState from "react"
+import {useState} from "react"
 import axios from "axios"
 import BASE_URL from "./constants.js"
+import Timeline from "./Timeline.js"
 
 export default function SignIn ({setToken, setPicture}) {
 
     const navigate = useNavigate()
+    const token = localStorage.getItem("token")
+    
+
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
+    const [disable, setDisable] = useState(false)
 
     function login (event) {
-        event.preventDefault()
 
-        axios.post(`${BASE_URL}/signin`,{email:email, password: password})
+        event.preventDefault()
+        setDisable(true)
+
+        axios.post(`${BASE_URL}/signin`, {email:email, password: password})
             .then((ans) => {
                 setToken(ans.data.token)
                 setPicture(ans.data.urlPicture)
+                localStorage.setItem("token",JSON.stringify(ans.data.token))
+                navigate("/timeline")
             })
-            .catch((ans) => console.log(ans))
+            .catch((ans) => {console.log(ans)
+                alert(ans.response.data)
+                setDisable(false)
+            })
 
     }
 
     return (
-        <Container>
+        <>
+        { (token) ? <Timeline/> :
+         <Container>
             <Logo>
                 <Title>
                     <font face='Passion One'>linkr</font> <br/>
@@ -31,16 +45,16 @@ export default function SignIn ({setToken, setPicture}) {
                     the best links on the web  
                 </Title>
             </Logo>
-            <Login>
-                <form onSubmit={login()}>
+            <Login disable={disable}>
+                <form onSubmit={login}>
                     <input placeholder="e-mail" onChange={e => {setEmail(e.target.value)}} required/>
                     <input placeholder="password" type="password" onChange={e => {setPassword(e.target.value)}} required/>
-                    <button type="submit">Log In</button>
+                    <button type="submit" disabled={disable}>Log In</button>
                     <span onClick={() => navigate("/signup")}><br/>First time? Create an account!</span>
                 </form>
-                
             </Login>
-        </Container>
+        </Container>}
+        </>
     )
 }
 
@@ -107,7 +121,7 @@ const Login = styled.aside`
     button{
         width: 430px;
         height: 65px;
-        background-color: #1877F2;
+        background-color: ${props => props.disable ? 'grey' : '#1877F2'};
         color: white;
         border: none;
         border-radius: 6px;
