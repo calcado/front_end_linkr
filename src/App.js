@@ -3,14 +3,12 @@ import { GlobalStyle } from "./GlobalStyles.js";
 import SignIn from "./SignIn.js";
 import SignUp from "./SignUp.js";
 import Timeline from "./pages/timeline.js";
-
 import {useState} from "react"
 
 function App() {
 
   const [token, setToken] = useState()
   const [picture, setPicture] = useState()
-
 
   return (
     <>
@@ -19,7 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<SignIn setToken={setToken} setPicture={setPicture}/>} />
         <Route path="/signup" element={<SignUp/>} />
-        <Route path="/timeline" element={<Timeline/>} />
+        <Route path="/timeline" element={<Timeline token={token} picture={picture}/>} />
       </Routes>
     </BrowserRouter>
     </> 

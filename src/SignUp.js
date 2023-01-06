@@ -1,13 +1,9 @@
 import { useState } from "react"
-import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import BASE_URL from "./constants"
 import axios from "axios"
-import BASE_URL from "./constants"
-import axios from "axios"
 
-export default function SignUp () {
 export default function SignUp () {
 
     const navigate = useNavigate()
@@ -15,19 +11,21 @@ export default function SignUp () {
     const [password, setPassword] = useState()
     const [userName, setUserName] = useState()
     const [urlPicture, setUrlPicture] = useState()
-    let deactivate = false
+    const [disable, setDisable] = useState(false)
 
 
     function register (event) {
         event.preventDefault()
-        deactivate = true
+        setDisable(true)
 
-        axios.post(`${BASE_URL}/signup`, {email:email, password: password, userName: userName, urlPicture: urlPicture})
+        axios.post(`${BASE_URL}/signup`, {email:email, password: password, name: userName, urlPicture: urlPicture})
             .then((ans) => {
-                deactivate = false
                 navigate("/")
             })
-            .catch((ans) => console.log(ans))
+            .catch((ans) => {console.log(ans)
+                alert(ans.response.data)
+                setDisable(false)
+            })
     }
 
     return (
@@ -39,16 +37,14 @@ export default function SignUp () {
                     the best links on the web  
                 </Title>
             </Logo>
-            <Registration>
+            <Registration disable={disable}>
                 <form onSubmit={register}>
                     <input placeholder="e-mail" type="email" onChange={e => {setEmail(e.target.value)}} required/>
                     <input placeholder="password" type="password" onChange={e => {setPassword(e.target.value)}} required/>
                     <input placeholder="username"onChange={e => {setUserName(e.target.value)}} required/>
                     <input placeholder="picture url" onChange={e => {setUrlPicture(e.target.value)}}/>
-                    <button type="submit" disabled={deactivate}>Log In</button>
+                    <button type="submit" disabled={disable}>Sign Up</button>
                     <span onClick={() => navigate("/")}><br/>Switch back to log in</span>
-                </form>        
-            </Registration>
                 </form>        
             </Registration>
         </Container>
@@ -79,7 +75,6 @@ const Title = styled.div`
     }
 `
 
-const Registration = styled.aside`
 const Registration = styled.aside`
     width: 34vw;
     height: 98vh;
