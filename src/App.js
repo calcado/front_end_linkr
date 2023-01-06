@@ -3,6 +3,7 @@ import { GlobalStyle } from "./GlobalStyles.js";
 import SignIn from "./SignIn.js";
 import SignUp from "./SignUp.js";
 import Timeline from "./pages/timeline.js";
+
 import {useState} from "react"
 
 function App() {

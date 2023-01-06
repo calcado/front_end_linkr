@@ -3,6 +3,7 @@ import styled from "styled-components"
 import {useState} from "react"
 import axios from "axios"
 import BASE_URL from "./constants.js"
+
 import Timeline1 from "./Timeline.js"
 
 export default function SignIn ({setToken, setPicture}) {
@@ -36,7 +37,9 @@ export default function SignIn ({setToken, setPicture}) {
 
     return (
         <>
+
         { (token) ? <Timeline1/> :
+
          <Container>
             <Logo>
                 <Title>
