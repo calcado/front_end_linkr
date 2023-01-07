@@ -1,4 +1,5 @@
 import axios from "axios";
+import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import BASE_URL from "../constants";
@@ -23,7 +24,7 @@ export function UserPage () {
         <>
             <TopBar />
             <Container>
-                
+
             </Container>
         </>
     )
