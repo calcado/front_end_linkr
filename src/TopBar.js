@@ -1,15 +1,30 @@
 import axios from "axios"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import BASE_URL from "./constants"
 
 
 
-export default function TopBar ({picture, token}) {
+export default function TopBar () {
 
+    const [switcher, setSwither] = useState(false)
     const navigate = useNavigate()
-    let [switcher, setSwither] = useState(false)
+    const token = JSON.parse(localStorage.getItem("token"))
+    const [picture, setPicture] = useState(null)
+
+    useEffect(() => {
+        axios.post(`${BASE_URL}/signin`,{}, {headers: {"authorization":`Bearer: ${token}` }})
+            .then((ans) => {
+                setPicture(ans.data.urlPicture)
+            })
+            .catch(ans => {
+                console.log(ans)
+                alert("Token inválido!")
+                localStorage.removeItem("token")
+                navigate("/")
+            })
+    },[token, navigate])
 
 
     function logout () {
@@ -23,12 +38,15 @@ export default function TopBar ({picture, token}) {
     return (
         <Bar>
             <span>linkr</span>
+            <SearchBar>
+                <input />
+            </SearchBar>
             <Menu onClick={()=>setSwither(!switcher)}>
                 {(!switcher)
                 ?
                 <ion-icon name="chevron-down-outline" ></ion-icon> 
                 :
-                <ion-icon name="chevron-up-outline" onClick={()=>!switcher}></ion-icon> } 
+                <ion-icon name="chevron-up-outline" ></ion-icon> } 
                 <img src={picture} alt="profile"/>
                 <Options switcher={switcher}>
                     <button onClick={()=>logout()}>Logout</button>
@@ -41,6 +59,7 @@ export default function TopBar ({picture, token}) {
 const Bar = styled.div`
     box-sizing: border-box;
     position: fixed;
+    z-index: 1;
     top: 0;
     left: 0;
     width: 100vw;
@@ -69,11 +88,17 @@ const Menu = styled.div`
     align-items: center;
     display: flex;
     justify-content: space-between;
+    margin-right: 15px;
     ion-icon{
         font-size: 30px;  
     }
     
 `
+
+const SearchBar = styled.div`
+
+`
+
 const Options = styled.div`
     display: ${props => props.switcher ? 'flex' : 'none'};
     position: fixed;

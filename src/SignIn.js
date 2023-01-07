@@ -3,15 +3,12 @@ import styled from "styled-components"
 import {useState} from "react"
 import axios from "axios"
 import BASE_URL from "./constants.js"
+import Timeline from "./pages/timeline.js"
 
-import Timeline1 from "./Timeline.js"
-
-export default function SignIn ({setToken, setPicture}) {
+export default function SignIn () {
 
     const navigate = useNavigate()
     const token = localStorage.getItem("token")
-    
-
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
     const [disable, setDisable] = useState(false)
@@ -23,8 +20,6 @@ export default function SignIn ({setToken, setPicture}) {
 
         axios.post(`${BASE_URL}/signin`, {email:email, password: password})
             .then((ans) => {
-                setToken(ans.data.token)
-                setPicture(ans.data.urlPicture)
                 localStorage.setItem("token",JSON.stringify(ans.data.token))
                 navigate("/timeline")
             })
@@ -38,7 +33,7 @@ export default function SignIn ({setToken, setPicture}) {
     return (
         <>
 
-        { (token) ? <Timeline1/> :
+        { (token) ? <Timeline/> :
 
          <Container>
             <Logo>
