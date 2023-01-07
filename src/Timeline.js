@@ -10,7 +10,7 @@ export default function Timeline1 () {
 
 
     const navigate = useNavigate()
-    const token = JSON.parse(localStorage.getItem("token"))
+    const token = localStorage.getItem("token")
     const [picture, setPicture] = useState(null)
 
     useEffect(() => {
