@@ -1,52 +1,54 @@
 import styled from "styled-components"
-import { useState, useEffect} from "react"
-import {posttrending,gettrending} from "../request/request"
+import { useState, useEffect } from "react"
+import { posttrending, gettrending } from "../request/request"
 import imagem from "../empresa.png"
+import TopBar from "../TopBar"
 
 export default function Timeline() {
 
-const [url,seturl] = useState();
-const [description,setdescription] = useState();
-const [loading,setloading] = useState(true);
-const [trending,settrending] = useState();
-const [error,seterror] = useState();
-const [refresh,setrefresh] = useState(true);
+    const [url, seturl] = useState();
+    const [description, setdescription] = useState();
+    const [loading, setloading] = useState(true);
+    const [trending, settrending] = useState();
+    const [error, seterror] = useState();
+    const [refresh, setrefresh] = useState(true);
 
-useEffect(() => {
-    let answer = gettrending()
-    answer.then((res) => {
-        settrending(res.data)
-        console.log(res.data)
-    });
-    answer.catch(() => seterror("An error ocurred while trying to fetch the posts,please refresh the page"))
-}, [refresh]);
+    useEffect(() => {
+        let answer = gettrending()
+        answer.then((res) => {
+            settrending(res.data)
+       
+        });
+        answer.catch(() => seterror("An error ocurred while trying to fetch the posts,please refresh the page"))
+    }, [refresh]);
 
-function senttrack(){
-    setloading(false)
-    if (!url || url.length < 3 ){
-        alert("Obrigatório colocar uma url valida!")
-        setloading(true)
-        return
+    function senttrack() {
+        setloading(false)
+        if (!url || url.length < 3) {
+            alert("Obrigatório colocar uma url valida!")
+            setloading(true)
+            return
+        }
+        let envio = { url, description, userid: 1 }
+        let send = posttrending(envio)
+        send.then(() => {
+            setloading(true);
+            seturl();
+            setdescription();
+            setrefresh(!refresh)
+        })
+        send.catch(() => {
+            alert("Houve um erro ao publicar seu link")
+            setloading(true)
+        })
+
     }
-   let envio = {url,description,userid:1}
-   let send = posttrending(envio)
-   send.then(()=>{
-    setloading(true);
-    seturl();
-    setdescription();
-    setrefresh(!refresh)
-   })
-   send.catch(()=>{
-    alert("Houve um erro ao publicar seu link")
-    setloading(true)
-   })
-
-}
- 
-    const exemplos = [{ name: "Cledson", comentario: "Olha que site daoraaaa", url: "https://www.globo.com/" }, { name: "Cledson2", comentario: "Olha que site daoraaaa e segundooooooo ", url: "https://www.globoesporte.com/" }]
 
     
+
     return (
+       <>
+       <TopBar></TopBar>
         <Container>
             <Trends>
                 <Tittle>
@@ -56,51 +58,58 @@ function senttrack(){
                     <img src={imagem}></img>
                     <div>
                         What are you going to share today?
-                        <Link value={url? url: ""} disabled={!loading} onChange={(e) => {seturl(e.target.value )}} placeholder="http://...">
+                        <Link value={url ? url : ""} disabled={!loading} onChange={(e) => { seturl(e.target.value) }} placeholder="http://...">
 
                         </Link>
-                        <Description value={description? description: ""} disabled={!loading} onChange={(e) => {setdescription(e.target.value )}} placeholder="Awesome article about #javascript"></Description>
+                        <Description value={description ? description : ""} disabled={!loading} onChange={(e) => { setdescription(e.target.value) }} placeholder="Awesome article about #javascript"></Description>
                         <footer>
-                            <Button disabled={!loading} onClick={() => {senttrack()}}>
-                               {loading === true ? "Publish" : "Publishing..."}
+                            <Button disabled={!loading} onClick={() => { senttrack() }}>
+                                {loading === true ? "Publish" : "Publishing..."}
                             </Button>
                         </footer>
                     </div>
-                </Publish>  
+                </Publish>
                 <Publications>
-                    <Publication>
-                        <img src={imagem}></img>
-                        <div>
-                            <h1>MEU NOME LINDO</h1>
-                            <h2>textooooooooooooooooooooooooooooooooooooooooooo00000000000000000000000000000000000000000</h2>
+                    {trending ? trending.map((ref) => {
+                        return (
+                            <Publication>
+                                <Perfil src={imagem} ></Perfil>
+                                <Arruma>
+                                    <h1>MEU NOME LINDO</h1>
+                                    <h2>{ref.description}</h2>
+                                    <Links>
+                                        <div>
+                                            <h3>{ref.titulo}</h3>
+                                            <h4>{ref.descricao}</h4>
+                                            <a target="_blank" href={ref.url}> {ref.url}</a>
+                                        </div>
+                                        <img src={ref.imgurl}></img>
+                                    </Links>
+                                </Arruma>
 
-                        </div>
-                    </Publication>
+                            </Publication>
+                        )
+                    }) : error?error : "There are no post yet"}
+
                 </Publications>
             </Trends>
         </Container>
+       </>
+       
     )
 }
 
-const Publications = styled.div`
-margin-top:28px;
-`
-const Publication = styled.div`
-background: #171717;
-width: 611px;
-min-height: 276px;
-border-radius: 16px;
-position:relative;
-display:flex;
-img{
+const Perfil = styled.img`
     position:absolute;
     width:50px;
     height:50px;
     border-radius: 50%;
     left: 18px;
     top: 16px;
-}
-div{
+
+`
+const Arruma = styled.div`
+
     display:flex;
     margin-left: 87px;
     margin-top: 10px;
@@ -112,8 +121,69 @@ div{
     color: #707070;
     max-width:520px;
     flex-direction: column;
+   
  
+
+`
+
+const Links = styled.footer`
+display:flex;
+width: 503px;
+height: 155px;
+border: 1px solid #4D4D4D;
+border-radius: 11px;
+padding-left:19px;
+justify-content: space-between;
+img{
+border-top-right-radius: 11px;
+border-bottom-right-radius: 11px;
+height: 100%;
+width: 154px;
+
 }
+h3{
+    margin-top:24px;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+    color: #CECECE;
+}
+h4{
+    margin-top:5px;
+ font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 11px;
+line-height: 13px;
+color: #9B9595;
+}
+a{
+    margin-top:13px;
+    font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 11px;
+line-height: 13px;
+text-decoration:none;
+color: #CECECE;
+}
+`
+const Publications = styled.div`
+margin-top:28px;
+`
+const Publication = styled.div`
+margin-bottom:16px;
+background: #171717;
+width: 611px;
+min-height: 276px;
+border-radius: 16px;
+position:relative;
+display:flex;
+padding-right:21px;
+
+
 h1{
 font-family: 'Lato';
 font-style: normal;
@@ -154,7 +224,7 @@ align-items: center;
 justify-content: center;
 width: 100vw;
 margin-top: 78px;
-
+z-index: -1;
 `
 const Publish = styled.div`
 width: 611px;
