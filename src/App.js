@@ -5,6 +5,7 @@ import SignUp from "./SignUp.js";
 import Timeline from "./pages/timeline.js";
 
 import {useState} from "react"
+import { UserPage } from "./pages/UserPage.js";
 
 function App() {
 
@@ -18,7 +19,8 @@ function App() {
       <Routes>
         <Route path="/" element={<SignIn setToken={setToken} setPicture={setPicture}/>} />
         <Route path="/signup" element={<SignUp/>} />
-        <Route path="/timeline" element={<Timeline token={token} picture={picture}/>} />
+        <Route path="/timeline" element={<Timeline/>} />
+        <Route patch="/user/:id" element={<UserPage/>} />
       </Routes>
     </BrowserRouter>
     </> 

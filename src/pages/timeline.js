@@ -17,7 +17,7 @@ export default function Timeline() {
         let answer = gettrending()
         answer.then((res) => {
             settrending(res.data)
-       
+
         });
         answer.catch(() => seterror("An error ocurred while trying to fetch the posts,please refresh the page"))
     }, [refresh]);
@@ -44,58 +44,58 @@ export default function Timeline() {
 
     }
 
-    
+
 
     return (
-       <>
-       <TopBar></TopBar>
-        <Container>
-            <Trends>
-                <Tittle>
-                    timeline
-                </Tittle>
-                <Publish>
-                    <img src={imagem}></img>
-                    <div>
-                        What are you going to share today?
-                        <Link value={url ? url : ""} disabled={!loading} onChange={(e) => { seturl(e.target.value) }} placeholder="http://...">
+        <>
+            <TopBar />
+            <Container>
+                <Trends>
+                    <Tittle>
+                        timeline
+                    </Tittle>
+                    <Publish>
+                        <img src={imagem}></img>
+                        <div>
+                            What are you going to share today?
+                            <Link value={url ? url : ""} disabled={!loading} onChange={(e) => { seturl(e.target.value) }} placeholder="http://...">
 
-                        </Link>
-                        <Description value={description ? description : ""} disabled={!loading} onChange={(e) => { setdescription(e.target.value) }} placeholder="Awesome article about #javascript"></Description>
-                        <footer>
-                            <Button disabled={!loading} onClick={() => { senttrack() }}>
-                                {loading === true ? "Publish" : "Publishing..."}
-                            </Button>
-                        </footer>
-                    </div>
-                </Publish>
-                <Publications>
-                    {trending ? trending.map((ref) => {
-                        return (
-                            <Publication>
-                                <Perfil src={imagem} ></Perfil>
-                                <Arruma>
-                                    <h1>MEU NOME LINDO</h1>
-                                    <h2>{ref.description}</h2>
-                                    <Links>
-                                        <div>
-                                            <h3>{ref.titulo}</h3>
-                                            <h4>{ref.descricao}</h4>
-                                            <a target="_blank" href={ref.url}> {ref.url}</a>
-                                        </div>
-                                        <img src={ref.imgurl}></img>
-                                    </Links>
-                                </Arruma>
+                            </Link>
+                            <Description value={description ? description : ""} disabled={!loading} onChange={(e) => { setdescription(e.target.value) }} placeholder="Awesome article about #javascript"></Description>
+                            <footer>
+                                <Button disabled={!loading} onClick={() => { senttrack() }}>
+                                    {loading === true ? "Publish" : "Publishing..."}
+                                </Button>
+                            </footer>
+                        </div>
+                    </Publish>
+                    <Publications>
+                        {trending ? trending.map((ref) => {
+                            return (
+                                <Publication>
+                                    <Perfil src={imagem} ></Perfil>
+                                    <Arruma>
+                                        <h1>MEU NOME LINDO</h1>
+                                        <h2>{ref.description}</h2>
+                                        <Links>
+                                            <div>
+                                                <h3>{ref.titulo}</h3>
+                                                <h4>{ref.descricao}</h4>
+                                                <a target="_blank" href={ref.url}> {ref.url}</a>
+                                            </div>
+                                            <img src={ref.imgurl}></img>
+                                        </Links>
+                                    </Arruma>
 
-                            </Publication>
-                        )
-                    }) : error?error : "There are no post yet"}
+                                </Publication>
+                            )
+                        }) : error ? error : "There are no post yet"}
 
-                </Publications>
-            </Trends>
-        </Container>
-       </>
-       
+                    </Publications>
+                </Trends>
+            </Container>
+        </>
+
     )
 }
 
@@ -222,7 +222,7 @@ const Container = styled.div`
 display: flex;
 align-items: center;
 justify-content: center;
-width: 100vw;
+width: 98vw;
 margin-top: 78px;
 z-index: -1;
 `
