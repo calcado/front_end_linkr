@@ -20,7 +20,7 @@ function App() {
         <Route path="/" element={<SignIn setToken={setToken} setPicture={setPicture}/>} />
         <Route path="/signup" element={<SignUp/>} />
         <Route path="/timeline" element={<Timeline/>} />
-        <Route patch="/user/:id" element={<UserPage/>} />
+        <Route path="/user/:id" element={<UserPage/>} />
       </Routes>
     </BrowserRouter>
     </> 
