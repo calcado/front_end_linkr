@@ -3,6 +3,9 @@ import { useState, useEffect } from "react"
 import { posttrending, gettrending } from "../request/request"
 import imagem from "../empresa.png"
 import TopBar from "../TopBar"
+import {BsHeart, BsHearthFill} from "react-icons"
+import axios from "axios"
+import { Tooltip } from 'react-tooltip'
 
 export default function Timeline() {
 
@@ -12,7 +15,9 @@ export default function Timeline() {
     const [trending, settrending] = useState();
     const [error, seterror] = useState();
     const [refresh, setrefresh] = useState(true);
-
+    const [liked, setLike]=useState(false);
+    const [likesCount, setNumberLikes]=useState(0);
+    
     useEffect(() => {
         let answer = gettrending()
         answer.then((res) => {
@@ -44,6 +49,32 @@ export default function Timeline() {
 
     }
 
+    
+    function Like(){
+        if(liked === false){
+            setLike(true)
+            const requisition = axios.post(`${BASE_URL}/${postId}/likes`,{userid})
+            requisition.then((response)=>{
+            setNumberLikes(likesCount + 1);
+            })
+            requisition.catch((response)=>{
+                console.log(response);
+                alert(response);
+            })
+
+        }
+        else{
+            setLike(false)
+            const requisition = axios.delete(`${BASE_URL}/${postId}/likes`,{userid})
+            requisition.then((response)=>{
+            setNumberLikes(likesCount - 1);
+            })
+            requisition.catch((response)=>{
+                console.log(response);
+                alert(response);
+            })
+        }
+    }
 
 
     return (
@@ -74,6 +105,8 @@ export default function Timeline() {
                             return (
                                 <Publication>
                                     <Perfil src={imagem} ></Perfil>
+                                    <Icon OnClick={Like}> {liked === false ? <BsHeart/> : <BsHearthFill/> } </Icon>
+                                    <WhoLikes>`${likesCount} likes`</WhoLikes>
                                     <Arruma>
                                         <h1>MEU NOME LINDO</h1>
                                         <h2>{ref.description}</h2>
@@ -113,7 +146,7 @@ const Arruma = styled.div`
     display:flex;
     margin-left: 87px;
     margin-top: 10px;
-    font-family: 'Lato';
+    font-family: 'Lato', sans-serif;
     font-style: normal;
     font-weight: 300;
     font-size: 20px;
@@ -143,7 +176,7 @@ width: 154px;
 }
 h3{
     margin-top:24px;
-    font-family: 'Lato';
+    font-family: 'Lato', sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
@@ -152,7 +185,7 @@ h3{
 }
 h4{
     margin-top:5px;
- font-family: 'Lato';
+ font-family: 'Lato', sans-serif;
 font-style: normal;
 font-weight: 400;
 font-size: 11px;
@@ -161,7 +194,7 @@ color: #9B9595;
 }
 a{
     margin-top:13px;
-    font-family: 'Lato';
+    font-family: 'Lato', sans-serif;
 font-style: normal;
 font-weight: 400;
 font-size: 11px;
@@ -185,7 +218,7 @@ padding-right:21px;
 
 
 h1{
-font-family: 'Lato';
+font-family: 'Lato', sans-serif;
 font-style: normal;
 font-weight: 400;
 font-size: 19px;
@@ -194,7 +227,7 @@ color: #FFFFFF;
 word-wrap: break-word;
 }
 h2{
- font-family: 'Lato';
+ font-family: 'Lato', sans-serif;
 font-style: normal;
 font-weight: 400;
 font-size: 17px;
@@ -210,7 +243,7 @@ height: 31px;
 background: #1877F2;
 border-radius: 5px;
 border-style:none;
-font-family: 'Lato';
+font-family: 'Lato', sans-serif;
 font-style: normal;
 font-weight: 700;
 font-size: 14px;
@@ -245,7 +278,7 @@ img{
 div{
     margin-left: 87px;
     margin-top: 21px;
-    font-family: 'Lato';
+    font-family: 'Lato',sans-serif;
     font-style: normal;
     font-weight: 300;
     font-size: 20px;
@@ -270,7 +303,7 @@ border-style:none;
 margin-top:5px;
 padding-left:5px;
 ::placeholder {
-    font-family: 'Lato';
+    font-family: 'Lato',sans-serif;
     font-style: normal;
     font-weight: 300;
     font-size: 15px;
@@ -305,10 +338,31 @@ height:100%;
 `
 
 const Tittle = styled.h1`
-font-family: 'Oswald';
+font-family: 'Oswald',sans-serif;
 font-style: normal;
 font-weight: 700;
 font-size: 43px;
 line-height: 64px;
 color: white;
+`
+
+const Icon = styled.button`
+height: 20px;
+widht: 20px;
+color: liked === false ? #FFFFFF : #AC0000;
+cursor: pointer;
+position: absolute;
+top: 40px;
+left: 16px ;
+`
+const WhoLikes = styled.span`
+width: 50px;
+height: 13px;
+font-size: 11px;
+color: #FFFFFF;
+font-family: 'Lato',sans-serif;
+postion: absolute;
+top: 45px;
+left: 16px;
+
 `
