@@ -3,9 +3,11 @@ import { useState, useEffect } from "react"
 import { posttrending, gettrending } from "../request/request"
 import imagem from "../empresa.png"
 import TopBar from "../TopBar"
-import {BsHeart, BsHearthFill} from "react-icons"
+import {BsHeart, BsHeartFill} from "react-icons/bs"
 import axios from "axios"
 import { Tooltip } from 'react-tooltip'
+import BASE_URL from "../constants.js"
+
 
 export default function Timeline() {
 
@@ -53,7 +55,7 @@ export default function Timeline() {
     function Like(){
         if(liked === false){
             setLike(true)
-            const requisition = axios.post(`${BASE_URL}/${postId}/likes`,{userid})
+            const requisition = axios.post(`${BASE_URL}/timeline/likes`)
             requisition.then((response)=>{
             setNumberLikes(likesCount + 1);
             })
@@ -65,7 +67,7 @@ export default function Timeline() {
         }
         else{
             setLike(false)
-            const requisition = axios.delete(`${BASE_URL}/${postId}/likes`,{userid})
+            const requisition = axios.delete(`${BASE_URL}/timeline/postId`)
             requisition.then((response)=>{
             setNumberLikes(likesCount - 1);
             })
@@ -105,8 +107,8 @@ export default function Timeline() {
                             return (
                                 <Publication>
                                     <Perfil src={imagem} ></Perfil>
-                                    <Icon OnClick={Like}> {liked === false ? <BsHeart/> : <BsHearthFill/> } </Icon>
-                                    <WhoLikes>`${likesCount} likes`</WhoLikes>
+                                    <Icon OnClick={Like}> {liked === false ? <BsHeart/> : <BsHeartFill/> } </Icon>
+                                    <WhoLikes>{`${likesCount} likes`}</WhoLikes>
                                     <Arruma>
                                         <h1>MEU NOME LINDO</h1>
                                         <h2>{ref.description}</h2>
@@ -349,13 +351,13 @@ color: white;
 const Icon = styled.button`
 height: 20px;
 widht: 20px;
-color: liked === false ? #FFFFFF : #AC0000;
+color: {liked === false ? #FFFFFF : #AC0000};
 cursor: pointer;
 position: absolute;
 top: 40px;
 left: 16px ;
 `
-const WhoLikes = styled.span`
+const WhoLikes = styled.div`
 width: 50px;
 height: 13px;
 font-size: 11px;
