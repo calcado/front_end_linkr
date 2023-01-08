@@ -364,7 +364,10 @@ color: white;
 const Icon = styled.button`
 height: 20px;
 widht: 20px;
+
 color: {(props) => props.liked ? "#ac0000" : "#ffffff"}
+
+
 cursor: pointer;
 position: absolute;
 top: 40px;

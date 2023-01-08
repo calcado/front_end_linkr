@@ -10,6 +10,6 @@ export function posttrending(body) {
 
   export function gettrending() {
 
-    const promise = axios.get(`${BASE_URL}/timeline`);
+    const promise = axios.get(`${BASE_URL}/timeline_get`);
     return promise;
   }
