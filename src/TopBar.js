@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import BASE_URL from "./constants"
+import {DebounceInput} from 'react-debounce-input'
 
 
 
@@ -12,6 +13,8 @@ export default function TopBar () {
     const navigate = useNavigate()
     const token = JSON.parse(localStorage.getItem("token"))
     const [picture, setPicture] = useState(null)
+    const [search, setSearch] = useState()
+    const [user, setUser] = useState()
 
     useEffect(() => {
         axios.post(`${BASE_URL}/signin`,{}, {headers: {"authorization":`Bearer: ${token}` }})
@@ -19,7 +22,6 @@ export default function TopBar () {
                 setPicture(ans.data.urlPicture)
             })
             .catch(ans => {
-                console.log(ans)
                 alert("Token inválido!")
                 localStorage.removeItem("token")
                 navigate("/")
@@ -35,11 +37,35 @@ export default function TopBar () {
             .catch((ans) => alert("Não foi possível fazer logout!"))
     }
 
+    function searchUser () {
+
+        axios.get(`${BASE_URL}/username/${search}`)
+            .then((ans) => {
+                setUser(ans.data)
+            })
+            .catch((ans) => console.log(ans.data))
+    }
+
     return (
         <Bar>
-            <span>linkr</span>
+            <span onClick={()=>navigate("/timeline")}>linkr</span>
             <SearchBar>
-                <input />
+                <DebounceInput minLength={2} debounceTimeout={300} onChange={e => {
+                    setSearch(e.target.value)
+                    searchUser()
+                    }} />
+                {(user && search?.length > 2) &&
+                    <Results user={user}>
+                        {user?.map((user)=>
+                            {return <User key={user.id} onClick={()=> {
+                                setSearch('')
+                                navigate(`/user/${user.id}`)}}>
+                                <img src={user.urlpicture} alt="urlPicture"/>
+                                <span>{user.name}</span>
+                            </User>}
+                        )}
+                    </Results>
+                }
             </SearchBar>
             <Menu onClick={()=>setSwither(!switcher)}>
                 {(!switcher)
@@ -47,7 +73,7 @@ export default function TopBar () {
                 <ion-icon name="chevron-down-outline" ></ion-icon> 
                 :
                 <ion-icon name="chevron-up-outline" ></ion-icon> } 
-                <img src={picture} alt="profile"/>
+                <img src={picture} alt="profilePic"/>
                 <Options switcher={switcher}>
                     <button onClick={()=>logout()}>Logout</button>
                 </Options>
@@ -73,12 +99,22 @@ const Bar = styled.div`
     span{
         font-family: 'Passion One';
         font-size: 49px;
-        letter-spacing: 3px;
+        letter-spacing: 1px;
+        cursor: pointer;
     }
     img{
         width: 53px;
         height: 53px;
         border-radius: 50%;
+    }
+    input{
+        box-sizing: border-box;
+        border: none;
+        width: inherit;
+        height: 45px;
+        outline: none;
+        border-radius: 8px;
+        position: fixed;
     }
 `
 
@@ -96,7 +132,48 @@ const Menu = styled.div`
 `
 
 const SearchBar = styled.div`
+    background-color: white;
+    position: fixed;
+    width: 550px;
+    top: 15px;
+    left: 33vw;
+    color: grey;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    border-radius: 8px;
+`
 
+const Results = styled.div`
+    display: flex;
+    width: inherit;
+    flex-direction: column;
+    font-family: 'Lato';
+    font-size: 19px;
+    margin-top: 50px;
+    border-radius: 8px;
+    img{
+        width: 39px;
+        height: 39px;
+        font-size: 12px;
+    }
+    span{
+        margin-left: 15px;
+        font-size: 30px;
+    }
+`
+
+const User = styled.div`
+    box-sizing: border-box;
+    width: inherit;
+    padding: 10px;
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    cursor: pointer;
+    background-color: #E7E7E7;
+    border-radius: 8px;
 `
 
 const Options = styled.div`

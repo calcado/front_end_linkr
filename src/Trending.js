@@ -6,37 +6,66 @@ import BASE_URL from "./constants.js";
 import TopBar from "./TopBar.js";
 
 export default function Trending() {
-    const [trendingList, setTrendingList] = useState();
-    const navigate = useNavigate();
     const { hashtag } = useParams();
+
+    const [trendingList, setTrendingList] = useState();
+    const [feed, setFeed] = useState();
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios
             .get(`${BASE_URL}/trending`)
             .then((res) => setTrendingList(res.data))
-            .catch((err) => alert("Erro ao carregar o trending"));
+            .catch(() => alert("Erro ao carregar o trending"));
+
+        axios
+            .get(`${BASE_URL}/hashtag/${hashtag}`)
+            .then((res) => setFeed(res.data))
+            .catch(() =>
+                alert(
+                    "An error ocurred while trying to fetch the posts,please refresh the page"
+                )
+            );
     }, []);
 
     return (
         <MainPage>
-        <TopBar />
+            <TopBar />
             <Container>
                 <Tittle># {hashtag}</Tittle>
                 <Publications>
-                    <Publication>
-                        <img src="" alt=""></img>
-                        <div>
-                            <h1>Usuario</h1>
-                            <h2>
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipiscing elit. Morbi at libero convallis,
-                                finibus tortor quis, finibus metus. Quisque
-                                maximus, nibh id dictum posuere, sapien diam
-                                porttitor justo, eu mollis magna lacus nec elit.
-                                Nulla pulvinar
-                            </h2>
-                        </div>
-                    </Publication>
+                        {feed
+                            ? feed.map((ref) => {
+                                  return (
+                                      <Publication>
+                                          <Perfil src={"https://encryptedtatic.com/images?q=tbn:ANd9GcRS-bz3w3YbiCPW23zQNWR0sjH7WNZFmCV_6Q&usqp=CAU-tbn0.gs"}/>
+                                          <DisplayFlex>
+                                              <h1>MEU NOME LINDO</h1>
+                                              <h2>{ref.description}</h2>
+                                              <Links>
+                                                  <div>
+                                                      <h3>{ref.titulo}</h3>
+                                                      <h4>{ref.descricao}</h4>
+                                                      <a
+                                                          target="_blank"
+                                                          href={ref.url}
+                                                          rel="noreferrer"
+                                                      >
+                                                          {" "}
+                                                          {ref.url}
+                                                      </a>
+                                                  </div>
+                                                  <img
+                                                      src={ref.imgurl}
+                                                      alt="Url Img"
+                                                  ></img>
+                                              </Links>
+                                          </DisplayFlex>
+                                      </Publication>
+                                  );
+                              })
+                            : "There are no posts yet"}
                 </Publications>
             </Container>
             <TrendingBar>
@@ -158,3 +187,68 @@ const Tittle = styled.h1`
     line-height: 64px;
     color: white;
 `;
+const DisplayFlex = styled.div`
+    display: flex;
+    margin-left: 87px;
+    margin-top: 10px;
+    font-family: "Lato", sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 24px;
+    color: #707070;
+    max-width: 520px;
+    flex-direction: column;
+`;
+const Links = styled.footer`
+    display: flex;
+    width: 503px;
+    height: 155px;
+    border: 1px solid #4d4d4d;
+    border-radius: 11px;
+    padding-left: 19px;
+    justify-content: space-between;
+    img {
+        border-top-right-radius: 11px;
+        border-bottom-right-radius: 11px;
+        height: 100%;
+        width: 154px;
+    }
+    h3 {
+        margin-top: 24px;
+        font-family: "Lato", sans-serif;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 19px;
+        color: #cecece;
+    }
+    h4 {
+        margin-top: 5px;
+        font-family: "Lato", sans-serif;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 11px;
+        line-height: 13px;
+        color: #9b9595;
+    }
+    a {
+        margin-top: 13px;
+        font-family: "Lato", sans-serif;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 11px;
+        line-height: 13px;
+        text-decoration: none;
+        color: #cecece;
+    }
+`;
+const Perfil = styled.img`
+    position:absolute;
+    width:50px;
+    height:50px;
+    border-radius: 50%;
+    left: 18px;
+    top: 16px;
+
+`

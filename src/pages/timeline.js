@@ -108,12 +108,18 @@ export default function Timeline() {
                         {trending ? trending.map((ref) => {
                             return (
                                 <Publication>
+
+
                                     <div><Perfil src={imagem} ></Perfil>
                                     <Icons><BsTrash/><BsPencil/></Icons>
                                     </div>
-                                    git                                    
+
+
                                     
-                                    <Icon OnClick={Like} > <BsHeart/></Icon>
+                                 <Icon OnClick={()=>Like} > {(!liked)? <BsHeart/> : <BsHeartFill/> } </Icon>
+                                    
+                           
+
 
                                     <WhoLikes  id="postId" data-data-tooltip-content="You liked this">
                                     {likesCount} likes
@@ -123,7 +129,6 @@ export default function Timeline() {
                                         Você, João e outras X pessoas
                                     </StyledReactToolTip>
 
-                                        
                                     <Arruma>
                                         <h1>MEU NOME LINDO</h1>
                                         <h2>{ref.description}</h2>
@@ -365,15 +370,14 @@ color: white;
 
 const Icon = styled.button`
 height: 20px;
-widht: 20px;
 
-color: {(props) => props.liked ? "#ac0000" : "#ffffff"}
-
+width: 20px;
+color: ${props => props.liked === false ? "#FFFFFF" : "#AC0000"};
 
 cursor: pointer;
-position: absolute;
+position: fixed;
 top: 40px;
-left: 16px ;
+left: 16px;
 `
 const WhoLikes = styled.div`
 width: 50px;
@@ -381,8 +385,10 @@ height: 13px;
 font-size: 11px;
 color: #FFFFFF;
 font-family: 'Lato',sans-serif;
-postion: absolute;
-top: 43px;
+
+position: absolute;
+top: 45px;
+
 left: 16px;
 `
 
