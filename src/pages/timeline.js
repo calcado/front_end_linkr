@@ -4,6 +4,7 @@ import { posttrending, gettrending } from "../request/request"
 import imagem from "../empresa.png"
 import TopBar from "../TopBar"
 import {BsHeart, BsHeartFill} from "react-icons/bs"
+
 import axios from "axios"
 import { Tooltip } from 'react-tooltip'
 import BASE_URL from "../constants.js"
@@ -50,7 +51,6 @@ export default function Timeline() {
         })
 
     }
-
     
     function Like(){
         if(liked === false){
@@ -106,9 +106,22 @@ export default function Timeline() {
                         {trending ? trending.map((ref) => {
                             return (
                                 <Publication>
-                                    <Perfil src={imagem} ></Perfil>
-                                    <Icon OnClick={Like}> {liked === false ? <BsHeart/> : <BsHeartFill/> } </Icon>
-                                    <WhoLikes>{`${likesCount} likes`}</WhoLikes>
+                                    <div><Perfil src={imagem} ></Perfil>
+                                    <div>edição</div>
+                                    </div>
+                                    {/* {liked === false ? <BsHeartFill/>:  */}
+                                    
+                                    <Icon OnClick={Like} ><BsHeart/></Icon>
+
+                                    <WhoLikes  id="postId" data-data-tooltip-content="You liked this">
+                                    {likesCount} likes
+                                    </WhoLikes>
+
+                                        <StyledReactToolTip place="bottom" id="usersId">
+                                        Você, João e outras X pessoas
+                                        </StyledReactToolTip>
+
+                                        
                                     <Arruma>
                                         <h1>MEU NOME LINDO</h1>
                                         <h2>{ref.description}</h2>
@@ -366,5 +379,13 @@ font-family: 'Lato',sans-serif;
 postion: absolute;
 top: 45px;
 left: 16px;
+`
 
+const StyledReactToolTip = styled(ReactToolTip)`
+background-color: #FFFFFF !important;
+color: #505050 !important;
+box-shadow: 0px 2px 20px lightgray;
+width: 169px;
+height: 24px;
+border-radius: 4px;
 `
