@@ -153,6 +153,7 @@ export default function Timeline() {
     </>
   );
 }
+}
 
 const Perfil = styled.img`
   position: absolute;
