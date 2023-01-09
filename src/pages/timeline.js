@@ -53,6 +53,7 @@ export default function Timeline() {
     }
     
     function Like(){
+        console.log('liked')
         if(liked === false){
             setLike(true)
             const requisition = axios.post(`${BASE_URL}/timeline/likes`)
@@ -107,7 +108,7 @@ export default function Timeline() {
                     <Publications>
                         {trending ? trending.map((ref) => {
                             return (
-                                <Publication>
+                                <Publication liked={liked}>
 
 
                                     <div><Perfil src={imagem} ></Perfil>
@@ -116,7 +117,7 @@ export default function Timeline() {
 
 
                                     
-                                 <Icon OnClick={()=>Like} > {(!liked)? <BsHeart/> : <BsHeartFill/> } </Icon>
+                                 {(!liked)? <ion-icon onClick={()=>Like()} name="heart-outline"></ion-icon> : <ion-icon onClick={()=>Like()} name="heart"></ion-icon> }
                                     
                            
 
@@ -237,6 +238,16 @@ border-radius: 16px;
 position:relative;
 display:flex;
 padding-right:21px;
+
+ion-icon {
+    position: absolute;
+    top: 50%;
+    left: 50px;
+    height: 20px;
+    width: 20px;
+    color: ${props => (!props.liked) ? "#FFFFFF" : "#AC0000"};
+    cursor: pointer;
+}
 
 
 h1{
@@ -369,8 +380,8 @@ color: white;
 `
 
 const Icon = styled.button`
+position: absolute;
 height: 20px;
-
 width: 20px;
 color: ${props => props.liked === false ? "#FFFFFF" : "#AC0000"};
 
@@ -392,7 +403,7 @@ top: 45px;
 left: 16px;
 `
 
-const StyledReactToolTip = styled(ReactToolTip)`
+const StyledReactToolTip = styled(Tooltip)`
 background-color: #FFFFFF !important;
 color: #505050 !important;
 box-shadow: 0px 2px 20px lightgray;
