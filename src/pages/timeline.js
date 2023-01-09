@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { posttrending, gettrending } from "../request/request"
 import imagem from "../empresa.png"
 import TopBar from "../TopBar"
-import {BsHeart, BsHeartFill} from "react-icons/bs"
+import {BsHeart, BsHeartFill,BsPencil, BsTrash} from "react-icons/bs"
 
 import axios from "axios"
 import { Tooltip } from 'react-tooltip'
@@ -77,7 +77,9 @@ export default function Timeline() {
             })
         }
     }
-
+    function WhoLiked(){
+        const requisition = axios.get(`${BASE_URL}/timeline/postId/`)
+    }
 
     return (
         <>
@@ -109,20 +111,23 @@ export default function Timeline() {
 
 
                                     <div><Perfil src={imagem} ></Perfil>
-                                    <div>edição</div>
+                                    <Icons><BsTrash/><BsPencil/></Icons>
                                     </div>
+
+
                                     
                                  <Icon OnClick={()=>Like} > {(!liked)? <BsHeart/> : <BsHeartFill/> } </Icon>
                                     
                            
 
+
                                     <WhoLikes  id="postId" data-data-tooltip-content="You liked this">
                                     {likesCount} likes
                                     </WhoLikes>
 
-                                        <StyledReactToolTip place="bottom" id="usersId">
+                                    <StyledReactToolTip place="bottom" id="usersId">
                                         Você, João e outras X pessoas
-                                        </StyledReactToolTip>
+                                    </StyledReactToolTip>
 
                                     <Arruma>
                                         <h1>MEU NOME LINDO</h1>
@@ -380,8 +385,10 @@ height: 13px;
 font-size: 11px;
 color: #FFFFFF;
 font-family: 'Lato',sans-serif;
+
 position: absolute;
 top: 45px;
+
 left: 16px;
 `
 
@@ -392,4 +399,10 @@ box-shadow: 0px 2px 20px lightgray;
 width: 169px;
 height: 24px;
 border-radius: 4px;
+`
+
+const Icons = styled.div`
+color: #FFFFFF;
+width: 14px;
+height: 14px;
 `
