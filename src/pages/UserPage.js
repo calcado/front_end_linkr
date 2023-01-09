@@ -33,21 +33,22 @@ export function UserPage() {
                     </UserTitle>
                     {userInfo?.posts && userInfo.posts.map((info, i) => {
                         return (
-                        <Publication key={i}>
-                            <Perfil src={userInfo.urlPicture} />
-                            <PostInfo>
-                                <h1>{info.userName}</h1>
-                                <h2>{info.description}</h2>
-                            <Links>
-                                <div>
-                                    <h3>{info.titulo}</h3>
-                                    <h4>{info.descricao}</h4>
-                                    <a target="_blank" href={info.url}> {info.url}</a>
-                                </div>
-                                <img src={info.imgurl}></img>
-                            </Links>
-                            </PostInfo>
-                        </Publication>)}
+                            <Publication key={i}>
+                                <Perfil src={userInfo.urlPicture} />
+                                <PostInfo>
+                                    <h1>{info.userName}</h1>
+                                    <h2>{info.description}</h2>
+                                    <Links>
+                                        <div>
+                                            <h3>{info.titulo}</h3>
+                                            <h4>{info.descricao}</h4>
+                                            <a target="_blank" href={info.url}> {info.url}</a>
+                                        </div>
+                                        <img src={info.imgurl}></img>
+                                    </Links>
+                                </PostInfo>
+                            </Publication>)
+                    }
                     )}
                 </Feed>
             </Container>
