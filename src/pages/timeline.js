@@ -107,7 +107,7 @@ export default function Timeline() {
                             return (
                                 <Publication>
                                     <Perfil src={imagem} ></Perfil>
-                                    <Icon OnClick={Like}> {liked === false ? <BsHeart/> : <BsHeartFill/> } </Icon>
+                                    <Icon OnClick={()=>Like} > {(!liked)? <BsHeart/> : <BsHeartFill/> } </Icon>
                                     <WhoLikes>{`${likesCount} likes`}</WhoLikes>
                                     <Arruma>
                                         <h1>MEU NOME LINDO</h1>
@@ -350,12 +350,12 @@ color: white;
 
 const Icon = styled.button`
 height: 20px;
-widht: 20px;
-color: {liked === false ? #FFFFFF : #AC0000};
+width: 20px;
+color: ${props => props.liked === false ? '#FFFFFF' : '#AC0000'};
 cursor: pointer;
-position: absolute;
+position: fixed;
 top: 40px;
-left: 16px ;
+left: 16px;
 `
 const WhoLikes = styled.div`
 width: 50px;
@@ -363,7 +363,7 @@ height: 13px;
 font-size: 11px;
 color: #FFFFFF;
 font-family: 'Lato',sans-serif;
-postion: absolute;
+position: absolute;
 top: 45px;
 left: 16px;
 
