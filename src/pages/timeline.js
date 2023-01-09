@@ -13,7 +13,7 @@ import BASE_URL from "../constants.js"
 
 export default function Timeline() {
 
-
+    const token = JSON.parse(localStorage.getItem("token"))
     const [url, seturl] = useState();
     const [description, setdescription] = useState();
     const [loading, setloading] = useState(true);
@@ -151,7 +151,9 @@ export default function Timeline() {
                                             </div>
                                             <img src={ref.imgurl}></img>
                                         </Links>
+
                                     </Arruma>
+
                                 </Publication>
                             );
                         })
