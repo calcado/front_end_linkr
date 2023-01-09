@@ -35,8 +35,9 @@ export function UserPage() {
                         return (
                             <Publication key={i}>
                                 <Perfil src={userInfo.urlPicture} />
+                                <ion-icon name="heart-outline"></ion-icon>
                                 <PostInfo>
-                                    <h1>{info.userName}</h1>
+                                    <h1>{userInfo.userName}</h1>
                                     <h2>{info.description}</h2>
                                     <Links>
                                         <div>
@@ -88,6 +89,7 @@ const UserTitle = styled.div`
     font-size: 43px;
     margin-bottom: 25px;
     img{
+        object-fit: cover;
         margin-right: 25px;
         font-size: 12px;
         width: 53px;
@@ -158,6 +160,16 @@ const Publication = styled.div`
     position:relative;
     display:flex;
     padding-right:21px;
+    font-family: 'Lato';
+
+    ion-icon{
+        color: white;
+        font-size: 30px;
+        position: absolute;
+        top: 35%;
+        left: 27px;
+        cursor: pointer;
+    }
 
 h1{
     font-family: 'Lato';

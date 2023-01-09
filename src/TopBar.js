@@ -39,6 +39,7 @@ export default function TopBar () {
 
     function searchUser () {
 
+        console.log(user)
         axios.get(`${BASE_URL}/username/${search}`)
             .then((ans) => {
                 setUser(ans.data)
@@ -128,15 +129,18 @@ const Menu = styled.div`
     ion-icon{
         font-size: 30px;  
     }
+    img{
+        object-fit: cover;
+    }
     
 `
 
 const SearchBar = styled.div`
     background-color: white;
     position: fixed;
-    width: 550px;
+    width: 33vw;
     top: 15px;
-    left: 33vw;
+    left: 33%;
     color: grey;
     display: flex;
     align-items: center;

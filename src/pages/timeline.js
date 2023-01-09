@@ -74,93 +74,53 @@ export default function Timeline() {
         alert(response);
       });
     }
-  }
-  function WhoLiked() {
-    const requisition = axios.get(`${BASE_URL}/timeline/postId/`);
-    requisition.then((response)=> response.map())
-    requisition.catch((response)=> console.log(response))
-  }
+    function WhoLiked(){
+        const requisition = axios.get(`${BASE_URL}/timeline/postId/`)
+    }
 
-  function editPost(){
-   
-   
-    const requisition = axios.put("/timeline/post/:id");
-    requisition.then((response )=> console.log(response));
-    requisition.catch((response)=> response.map(response.error))
+    return (
+        <>
+            <TopBar />
+            <Container>
+                <Trends>
+                    <Tittle>
+                        timeline
+                    </Tittle>
+                    <Publish>
+                        <img src={imagem}></img>
+                        <div>
+                            What are you going to share today?
+                            <Link value={url ? url : ""} disabled={!loading} onChange={(e) => { seturl(e.target.value) }} placeholder="http://...">
 
-  }
+                            </Link>
+                            <Description value={description ? description : ""} disabled={!loading} onChange={(e) => { setdescription(e.target.value) }} placeholder="Awesome article about #javascript"></Description>
+                            <footer>
+                                <Button disabled={!loading} onClick={() => { senttrack() }}>
+                                    {loading === true ? "Publish" : "Publishing..."}
+                                </Button>
+                            </footer>
+                        </div>
+                    </Publish>
+                    <Publications>
+                        {trending ? trending.map((ref) => {
+                            return (
+                                <Publication liked={liked}>
 
-  function deletePost(){
-    const requisition = axios.delete("/timeline/post/:id")
-    requisition.then((response )=> console.log(response))
-    requisition.catch((response)=>("Não foi possível deletar o post"))
-  }
-  return (
-    <>
-      <TopBar />
-      <Container>
-        <Trends>
-          <Tittle>timeline</Tittle>
-          <Publish>
-            <img src={imagem}></img>
-            <div>
-              What are you going to share today?
-              <Link
-                value={url ? url : ""}
-                disabled={!loading}
-                onChange={(e) => {
-                  seturl(e.target.value);
-                }}
-                placeholder="http://..."
-              ></Link>
-              <Description
-                value={description ? description : ""}
-                disabled={!loading}
-                onChange={(e) => {
-                  setdescription(e.target.value);
-                }}
-                placeholder="Awesome article about #javascript"
-              ></Description>
-              <footer>
-                <Button
-                  disabled={!loading}
-                  onClick={() => {
-                    senttrack();
-                  }}
-                >
-                  {loading === true ? "Publish" : "Publishing..."}
-                </Button>
-              </footer>
-            </div>
-          </Publish>
-          <Publications>
-            {trending
-              ? trending.map((ref) => {
-                  return (
-                    <Publication>
-                      <div>
-                        <Perfil src={imagem}></Perfil>
-                        <Icons>
-                          <PencilIcon OnClick={editPost()}>
-                            <BsPencil />
-                          </PencilIcon>
-                          <TrashIcon OnClick={deletePost()}>
-                            <BsTrash />
-                          </TrashIcon>
-                        </Icons>
-                      </div>
 
-                      <Icon OnClick={() => Like}>
-                        
-                        {!liked ? <BsHeart /> : <BsHeartFill />}{" "}
-                      </Icon>
+                                    <div><Perfil src={imagem} ></Perfil>
+                                    <Icons><BsTrash/><BsPencil/></Icons>
+                                    </div>
 
-                      <WhoLikes
-                        id="postId"
-                        data-data-tooltip-content="You liked this"
-                      >
-                        {likesCount} likes
-                      </WhoLikes>
+
+                                    
+                                 <Icon OnClick={()=>Like} > {(!liked)? <BsHeart/> : <BsHeartFill/> } </Icon>
+                                    
+                           
+
+
+                                    <WhoLikes  id="postId" data-data-tooltip-content="You liked this">
+                                    {likesCount} likes
+                                    </WhoLikes>
 
                       <StyledReactToolTip place="bottom" id="usersId">
                         Você, João e outras {likesCount - 2} pessoas
@@ -192,6 +152,7 @@ export default function Timeline() {
       </Container>
     </>
   );
+}
 }
 
 const Perfil = styled.img`
@@ -263,14 +224,24 @@ const Publications = styled.div`
   margin-top: 28px;
 `;
 const Publication = styled.div`
-  margin-bottom: 16px;
-  background: #171717;
-  width: 611px;
-  min-height: 276px;
-  border-radius: 16px;
-  position: relative;
-  display: flex;
-  padding-right: 21px;
+margin-bottom:16px;
+background: #171717;
+width: 611px;
+min-height: 276px;
+border-radius: 16px;
+position:relative;
+display:flex;
+padding-right:21px;
+
+ion-icon {
+    position: absolute;
+    top: 50%;
+    left: 50px;
+    height: 20px;
+    width: 20px;
+    color: ${props => (!props.liked) ? "#FFFFFF" : "#AC0000"};
+    cursor: pointer;
+}
 
   h1 {
     font-family: "Lato", sans-serif;
@@ -398,14 +369,16 @@ const Tittle = styled.h1`
 `;
 
 const Icon = styled.button`
-  height: 20px;
-  width: 20px;
-  color: ${(props) => (props.liked === false ? "#FFFFFF" : "#AC0000")};
-  cursor: pointer;
-  position: fixed;
-  top: 40px;
-  left: 16px;
-`;
+position: absolute;
+height: 20px;
+width: 20px;
+color: ${props => props.liked === false ? "#FFFFFF" : "#AC0000"};
+
+cursor: pointer;
+position: fixed;
+top: 40px;
+left: 16px;
+`
 const WhoLikes = styled.div`
   width: 50px;
   height: 13px;
@@ -418,13 +391,13 @@ const WhoLikes = styled.div`
 `;
 
 const StyledReactToolTip = styled(Tooltip)`
-  background-color: #ffffff !important;
-  color: #505050 !important;
-  box-shadow: 0px 2px 20px lightgray;
-  width: 169px;
-  height: 24px;
-  border-radius: 4px;
-`;
+background-color: #FFFFFF !important;
+color: #505050 !important;
+box-shadow: 0px 2px 20px lightgray;
+width: 169px;
+height: 24px;
+border-radius: 4px;
+`
 
 const Icons = styled.div`
 width: 43px;
