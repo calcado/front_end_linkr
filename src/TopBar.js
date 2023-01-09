@@ -39,7 +39,6 @@ export default function TopBar () {
 
     function searchUser () {
 
-        console.log(user)
         axios.get(`${BASE_URL}/username/${search}`)
             .then((ans) => {
                 setUser(ans.data)
