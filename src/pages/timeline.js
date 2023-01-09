@@ -118,8 +118,7 @@ export default function Timeline() {
                                     
                                  <Icon OnClick={()=>Like} > {(!liked)? <BsHeart/> : <BsHeartFill/> } </Icon>
                                     
-                           
-
+                        
 
                                     <WhoLikes  id="postId" data-data-tooltip-content="You liked this">
                                     {likesCount} likes
@@ -392,7 +391,7 @@ top: 45px;
 left: 16px;
 `
 
-const StyledReactToolTip = styled(ReactToolTip)`
+const StyledReactToolTip = styled(Tooltip)`
 background-color: #FFFFFF !important;
 color: #505050 !important;
 box-shadow: 0px 2px 20px lightgray;
