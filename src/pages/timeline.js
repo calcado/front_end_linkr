@@ -1,16 +1,20 @@
-import styled from "styled-components"
-import { useState, useEffect } from "react"
-import { posttrending, gettrending } from "../request/request"
-import imagem from "../empresa.png"
-import TopBar from "../TopBar"
-import {BsHeart, BsHeartFill,BsPencil, BsTrash} from "react-icons/bs"
+
+import styled from "styled-components";
+import { useState, useEffect, useRef } from "react";
+import { posttrending, gettrending } from "../request/request";
+import imagem from "../empresa.png";
+import TopBar from "../TopBar";
+import { BsHeart, BsHeartFill, BsPencil, BsTrash } from "react-icons/bs";
+
 
 import axios from "axios"
 import { Tooltip } from 'react-tooltip'
 import BASE_URL from "../constants.js"
 
 
+
 export default function Timeline() {
+
 
     const [url, seturl] = useState();
     const [description, setdescription] = useState();
@@ -18,68 +22,70 @@ export default function Timeline() {
     const [trending, settrending] = useState();
     const [error, seterror] = useState();
     const [refresh, setrefresh] = useState(true);
-    const [liked, setLike]=useState(false);
-    const [likesCount, setNumberLikes]=useState(0);
-    
-    useEffect(() => {
-        let answer = gettrending()
-        answer.then((res) => {
-            settrending(res.data)
+    const [liked, setLike] = useState(false);
+    const [likesCount, setNumberLikes] = useState(0);
 
+    useEffect(() => {
+        let answer = gettrending();
+        answer.then((res) => {
+            settrending(res.data);
         });
-        answer.catch(() => seterror("An error ocurred while trying to fetch the posts,please refresh the page"))
+        answer.catch(() =>
+            seterror(
+                "An error ocurred while trying to fetch the posts,please refresh the page"
+            )
+        );
     }, [refresh]);
 
     function senttrack() {
-        setloading(false)
+        setloading(false);
         if (!url || url.length < 3) {
-            alert("Obrigatório colocar uma url valida!")
-            setloading(true)
-            return
+            alert("Obrigatório colocar uma url valida!");
+            setloading(true);
+            return;
         }
-        let envio = { url, description, userid: 1 }
-        let send = posttrending(envio)
+        let envio = { url, description, userid: 1 };
+        let send = posttrending(envio);
         send.then(() => {
             setloading(true);
             seturl();
             setdescription();
-            setrefresh(!refresh)
-        })
+            setrefresh(!refresh);
+        });
         send.catch(() => {
-            alert("Houve um erro ao publicar seu link")
-            setloading(true)
-        })
+            alert("Houve um erro ao publicar seu link");
+            setloading(true);
+        });
 
     }
-    
-    function Like(){
-        if(liked === false){
-            setLike(true)
-            const requisition = axios.post(`${BASE_URL}/timeline/likes`)
-            requisition.then((response)=>{
-            setNumberLikes(likesCount + 1);
-            })
-            requisition.catch((response)=>{
-                console.log(response);
-                alert(response);
-            })
 
-        }
-        else{
-            setLike(false)
-            const requisition = axios.delete(`${BASE_URL}/timeline/postId`)
-            requisition.then((response)=>{
-            setNumberLikes(likesCount - 1);
-            })
-            requisition.catch((response)=>{
+    function Like() {
+        if (liked === false) {
+            setLike(true);
+            const requisition = axios.post(`${BASE_URL}/timeline/post/:id/likes`);
+            requisition.then((response) => {
+                setNumberLikes(likesCount + 1);
+            });
+            requisition.catch((response) => {
                 console.log(response);
                 alert(response);
-            })
+            });
+        } else {
+            setLike(false);
+            const requisition = axios.delete(`${BASE_URL}/timeline/postId`);
+            requisition.then((response) => {
+                setNumberLikes(likesCount - 1);
+            });
+            requisition.catch((response) => {
+                console.log(response);
+                alert(response);
+            });
+        }
+        function WhoLiked() {
+            const requisition = axios.get(`${BASE_URL}/timeline/postId/`)
         }
     }
-    function WhoLiked(){
-        const requisition = axios.get(`${BASE_URL}/timeline/postId/`)
-    }
+
 
     return (
         <>
@@ -111,21 +117,24 @@ export default function Timeline() {
 
 
                                     <div><Perfil src={imagem} ></Perfil>
-                                    <Icons><BsTrash/><BsPencil/></Icons>
+                                        <Icons><BsTrash /><BsPencil /></Icons>
                                     </div>
 
 
-                                    
-                                 <Icon OnClick={()=>Like} > {(!liked)? <BsHeart/> : <BsHeartFill/> } </Icon>
-                                    
-                        
+                                    <Icon OnClick={() => Like} > {(!liked) ? <BsHeart /> : <BsHeartFill />} </Icon>
 
-                                    <WhoLikes  id="postId" data-data-tooltip-content="You liked this">
-                                    {likesCount} likes
+
+
+
+
+                                    <WhoLikes id="postId" data-data-tooltip-content="You liked this">
+                                        {likesCount} likes
                                     </WhoLikes>
 
                                     <StyledReactToolTip place="bottom" id="usersId">
-                                        Você, João e outras X pessoas
+
+                                        Você, João e outras {likesCount - 2} pessoas
+
                                     </StyledReactToolTip>
 
                                     <Arruma>
@@ -135,22 +144,31 @@ export default function Timeline() {
                                             <div>
                                                 <h3>{ref.titulo}</h3>
                                                 <h4>{ref.descricao}</h4>
-                                                <a target="_blank" href={ref.url}> {ref.url}</a>
+
+                                                <a target="_blank" href={ref.url}>
+                                                    {" "}
+                                                    {ref.url}
+                                                </a>
+
                                             </div>
                                             <img src={ref.imgurl}></img>
                                         </Links>
-                                    </Arruma>
 
                                 </Publication>
-                            )
-                        }) : error ? error : "There are no post yet"}
+                            );
+                        })
+                            : error
+                                ? error
+                                : "There are no post yet"}
 
                     </Publications>
                 </Trends>
             </Container>
         </>
 
-    )
+    );
+
+
 }
 
 const Perfil = styled.img`
