@@ -5,8 +5,6 @@ import { posttrending, gettrending } from "../request/request";
 import imagem from "../empresa.png";
 import TopBar from "../TopBar";
 import { BsHeart, BsHeartFill, BsPencil, BsTrash } from "react-icons/bs";
-
-
 import axios from "axios"
 import { Tooltip } from 'react-tooltip'
 import BASE_URL from "../constants.js"
@@ -153,7 +151,9 @@ export default function Timeline() {
                                             </div>
                                             <img src={ref.imgurl}></img>
                                         </Links>
-                                     </Arruma>
+
+                                    </Arruma>
+
                                 </Publication>
                             );
                         })
