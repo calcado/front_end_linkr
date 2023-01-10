@@ -30,7 +30,7 @@ export default function Timeline() {
                 setPicture(ans.data.urlPicture)
             })
             .catch(ans => {
-                                          
+                     console.log(ans)                     
             })
     },[token])
 
@@ -82,32 +82,32 @@ export default function Timeline() {
 
     }
 
-    function Like() {
-        if (liked === false) {
-            setLike(true);
-            const requisition = axios.post(`${BASE_URL}/timeline/post/:id/likes`);
-            requisition.then((response) => {
-                setNumberLikes(likesCount + 1);
-            });
-            requisition.catch((response) => {
+    // function Like() {
+    //     if (liked === false) {
+    //         setLike(true);
+    //         const requisition = axios.post(`${BASE_URL}/timeline/post/:id/likes`);
+    //         requisition.then((response) => {
+    //             setNumberLikes(likesCount + 1);
+    //         });
+    //         requisition.catch((response) => {
             
-                alert(response);
-            });
-        } else {
-            setLike(false);
-            const requisition = axios.delete(`${BASE_URL}/timeline/postId`);
-            requisition.then((response) => {
-                setNumberLikes(likesCount - 1);
-            });
-            requisition.catch((response) => {
+    //             console.log(response);
+    //         });
+    //     } else {
+    //         setLike(false);
+    //         const requisition = axios.delete(`${BASE_URL}/timeline/postId`);
+    //         requisition.then((response) => {
+    //             setNumberLikes(likesCount - 1);
+    //         });
+    //         requisition.catch((response) => {
               
-                alert(response);
-            });
-        }
-        function WhoLiked() {
-            const requisition = axios.get(`${BASE_URL}/timeline/postId/`)
-        }
-    }
+    //             console.log(response);
+    //         });
+    //     }
+    //     function WhoLiked() {
+    //         const requisition = axios.get(`${BASE_URL}/timeline/postId/`)
+    //     }
+    // }
 
 
     return (
@@ -140,25 +140,29 @@ export default function Timeline() {
 
 
                                     <div><Perfil src={ref.urlpicture} ></Perfil>
-                                        <Icons><BsTrash /><BsPencil /></Icons>
+                                        <Icons><BsPencil /><BsTrash /></Icons>
                                     </div>
 
 
+                                   
+
+
+                                    <Like>
                                     <Icon OnClick={() => Like} > {(!liked) ? <BsHeart /> : <BsHeartFill />} </Icon>
-
-
-
-
-
                                     <WhoLikes id="postId" data-data-tooltip-content="You liked this">
                                         {likesCount} likes
                                     </WhoLikes>
+                                   
+                                    </Like>
 
-                                    <StyledReactToolTip place="bottom" id="usersId">
+
+                                   
+
+                                    {/* <StyledReactToolTip place="bottom" id="usersId">
 
                                         Você, João e outras {likesCount - 2} pessoas
 
-                                    </StyledReactToolTip>
+                                    </StyledReactToolTip> */}
 
                                     <Arruma>
                                         <h1>{ref.name}</h1>
@@ -205,6 +209,7 @@ const Perfil = styled.img`
     top: 16px;
 
 `
+
 const Arruma = styled.div`
 
     display:flex;
@@ -412,14 +417,12 @@ color: white;
 
 const Icon = styled.button`
 height: 20px;
-
+margin-bottom:5px;
 width: 20px;
 color: ${props => props.liked === false ? "#FFFFFF" : "#AC0000"};
-
 cursor: pointer;
-position: fixed;
-top: 40px;
-left: 16px;
+top: 86px;
+left: 33px;
 `
 const WhoLikes = styled.div`
 width: 50px;
@@ -428,7 +431,6 @@ font-size: 11px;
 color: #FFFFFF;
 font-family: 'Lato',sans-serif;
 
-position: absolute;
 top: 45px;
 
 left: 16px;
@@ -444,7 +446,20 @@ border-radius: 4px;
 `
 
 const Icons = styled.div`
+display:flex;
+width:40px;
+justify-content: space-between;
+position:absolute;
 color: #FFFFFF;
-width: 14px;
-height: 14px;
+right:22px;
+top:23px;
+`
+const Like = styled.div`
+
+left:30px;
+display:flex;
+flex-direction: column;
+position:absolute;
+display:flex;
+top:86px;
 `
