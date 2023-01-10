@@ -24,7 +24,7 @@ export default function Timeline() {
     const [likesCount, setNumberLikes] = useState(0);
 
     useEffect(() => {
-        let answer = gettrending();
+        let answer = gettrending(token);
         answer.then((res) => {
             settrending(res.data);
         });
@@ -43,7 +43,7 @@ export default function Timeline() {
             return;
         }
         let envio = { url, description, userid: 1 };
-        let send = posttrending(envio);
+        let send = posttrending(envio, token);
         send.then(() => {
             setloading(true);
             seturl();
