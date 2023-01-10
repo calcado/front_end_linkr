@@ -4,13 +4,13 @@ import { posttrending, gettrending } from "../request/request";
 import imagem from "../empresa.png";
 import TopBar from "../TopBar";
 import { BsHeart, BsHeartFill, BsPencil, BsTrash } from "react-icons/bs";
-
 import axios from "axios";
 import { Tooltip } from "react-tooltip";
 import BASE_URL from "../constants.js";
 
 export default function Timeline() {
 
+    const token = JSON.parse(localStorage.getItem("token"))
     const [url, seturl] = useState();
     const [description, setdescription] = useState();
     const [loading, setloading] = useState(true);
@@ -21,7 +21,7 @@ export default function Timeline() {
     const [likesCount, setNumberLikes] = useState(0);
 
     useEffect(() => {
-        let answer = gettrending();
+        let answer = gettrending(token);
         answer.then((res) => {
             settrending(res.data);
         });
@@ -40,7 +40,7 @@ export default function Timeline() {
             return;
         }
         let envio = { url, description, userid: 1 };
-        let send = posttrending(envio);
+        let send = posttrending(envio, token);
         send.then(() => {
             setloading(true);
             seturl();
