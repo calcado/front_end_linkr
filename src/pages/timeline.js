@@ -22,11 +22,36 @@ export default function Timeline() {
     const [refresh, setrefresh] = useState(true);
     const [liked, setLike] = useState(false);
     const [likesCount, setNumberLikes] = useState(0);
+    const [picture, setPicture] = useState(null)
+
+    useEffect(() => {
+        axios.post(`${BASE_URL}/signin`,{}, {headers: {"authorization":`Bearer: ${token}` }})
+            .then((ans) => {
+                setPicture(ans.data.urlPicture)
+            })
+            .catch(ans => {
+                                          
+            })
+    },[token])
 
     useEffect(() => {
         let answer = gettrending(token);
         answer.then((res) => {
             settrending(res.data);
+
+        });
+        answer.catch(() =>
+            seterror(
+                "An error ocurred while trying to fetch the posts,please refresh the page"
+            )
+        );
+    }, [refresh]);
+
+    useEffect(() => {
+        let answer = gettrending(token);
+        answer.then((res) => {
+            settrending(res.data);
+
         });
         answer.catch(() =>
             seterror(
@@ -65,7 +90,7 @@ export default function Timeline() {
                 setNumberLikes(likesCount + 1);
             });
             requisition.catch((response) => {
-                console.log(response);
+            
                 alert(response);
             });
         } else {
@@ -75,7 +100,7 @@ export default function Timeline() {
                 setNumberLikes(likesCount - 1);
             });
             requisition.catch((response) => {
-                console.log(response);
+              
                 alert(response);
             });
         }
@@ -94,7 +119,7 @@ export default function Timeline() {
                         timeline
                     </Tittle>
                     <Publish>
-                        <img src={imagem}></img>
+                        <img src={picture}></img>
                         <div>
                             What are you going to share today?
                             <Link value={url ? url : ""} disabled={!loading} onChange={(e) => { seturl(e.target.value) }} placeholder="http://...">
@@ -114,7 +139,7 @@ export default function Timeline() {
                                 <Publication>
 
 
-                                    <div><Perfil src={imagem} ></Perfil>
+                                    <div><Perfil src={ref.urlpicture} ></Perfil>
                                         <Icons><BsTrash /><BsPencil /></Icons>
                                     </div>
 
@@ -136,7 +161,7 @@ export default function Timeline() {
                                     </StyledReactToolTip>
 
                                     <Arruma>
-                                        <h1>MEU NOME LINDO</h1>
+                                        <h1>{ref.name}</h1>
                                         <h2>{ref.description}</h2>
                                         <Links>
                                             <div>
