@@ -23,11 +23,15 @@ export default function Timeline() {
     const [liked, setLike] = useState(false);
     const [likesCount, setNumberLikes] = useState(0);
     const [picture, setPicture] = useState(null)
+    const [user, setuser] = useState(null)
+    console.log(trending)
 
     useEffect(() => {
         axios.post(`${BASE_URL}/signin`,{}, {headers: {"authorization":`Bearer: ${token}` }})
             .then((ans) => {
-                setPicture(ans.data.urlPicture)
+                console.log(ans)
+                setPicture(ans.data.urlPicture);
+                setuser(ans.data.userId)
             })
             .catch(ans => {
                      console.log(ans)                     
@@ -140,12 +144,10 @@ export default function Timeline() {
 
 
                                     <div><Perfil src={ref.urlpicture} ></Perfil>
-                                        <Icons><BsPencil /><BsTrash /></Icons>
+
+                                     
                                     </div>
-
-
-                                   
-
+                                    {ref.userid === user? <Icons><BsPencil /><BsTrash /></Icons> : <></>}
 
                                     <Like>
                                     <Icon OnClick={() => Like} > {(!liked) ? <BsHeart /> : <BsHeartFill />} </Icon>
@@ -463,3 +465,4 @@ position:absolute;
 display:flex;
 top:86px;
 `
+
