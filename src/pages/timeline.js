@@ -233,7 +233,7 @@ const Arruma = styled.div`
 const Links = styled.footer`
 display:flex;
 width: 503px;
-height: 155px;
+min-height: 155px;
 border: 1px solid #4D4D4D;
 border-radius: 11px;
 padding-left:19px;
@@ -286,7 +286,7 @@ border-radius: 16px;
 position:relative;
 display:flex;
 padding-right:21px;
-
+word-break: break-word;
 
 h1{
 font-family: 'Lato', sans-serif;
