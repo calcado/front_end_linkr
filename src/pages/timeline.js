@@ -1,7 +1,8 @@
 
 import styled from "styled-components";
 import { useState, useEffect, useRef } from "react";
-import { posttrending, gettrending } from "../request/request";
+import { posttrending, gettrending ,deletepost} from "../request/request";
+import imagem from "../empresa.png";
 import TopBar from "../TopBar";
 import { BsHeart, BsHeartFill, BsPencil, BsTrash } from "react-icons/bs";
 import axios from "axios"
@@ -43,6 +44,7 @@ export default function Timeline() {
     useEffect(() => {
         let answer = gettrending(token);
         answer.then((res) => {
+            
             settrending(res.data);
 
         });
@@ -149,7 +151,7 @@ export default function Timeline() {
 
                                      
                                     </div>
-                                    {ref.userid === user? <Icons><BsPencil /><BsTrash /></Icons> : <></>}
+                                    {ref.userid === user? <Icons><div onClick={()=> console.log(ref.id)}><BsPencil /></div><div onClick={()=> {if (window.confirm("Tem certeza que deseja excluir este post?") == true) {let del = deletepost(ref.id) ;del.then(setrefresh(!refresh))}}}><BsTrash /></div></Icons> : <></>}
 
                                     <Like>
                                     <Icon OnClick={() => Like} > {(!liked) ? <BsHeart /> : <BsHeartFill />} </Icon>
@@ -235,7 +237,7 @@ const Arruma = styled.div`
 const Links = styled.footer`
 display:flex;
 width: 503px;
-height: 155px;
+min-height: 155px;
 border: 1px solid #4D4D4D;
 border-radius: 11px;
 padding-left:19px;
@@ -288,7 +290,7 @@ border-radius: 16px;
 position:relative;
 display:flex;
 padding-right:21px;
-
+word-break: break-word;
 
 h1{
 font-family: 'Lato', sans-serif;
