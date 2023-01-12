@@ -2,12 +2,13 @@
 import styled from "styled-components";
 import { useState, useEffect, useRef } from "react";
 import { posttrending, gettrending } from "../request/request";
-import imagem from "../empresa.png";
 import TopBar from "../TopBar";
 import { BsHeart, BsHeartFill, BsPencil, BsTrash } from "react-icons/bs";
 import axios from "axios"
 import { Tooltip } from 'react-tooltip'
 import BASE_URL from "../constants.js"
+import { ReactTagify } from "react-tagify";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -24,7 +25,8 @@ export default function Timeline() {
     const [likesCount, setNumberLikes] = useState(0);
     const [picture, setPicture] = useState(null)
     const [user, setuser] = useState(null)
-    console.log(trending)
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.post(`${BASE_URL}/signin`,{}, {headers: {"authorization":`Bearer: ${token}` }})
@@ -168,19 +170,19 @@ export default function Timeline() {
 
                                     <Arruma>
                                         <h1>{ref.name}</h1>
-                                        <h2>{ref.description}</h2>
+                                        <ReactTagify gifcolors="white" tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}>
+                                        <h2>{ref.description ? ref.description : ""}</h2>
+                                        </ReactTagify>
                                         <Links>
                                             <div>
                                                 <h3>{ref.titulo}</h3>
-                                                <h4>{ref.descricao}</h4>
-
+                                                    <h4>{ref.descricao}</h4>
                                                 <a target="_blank" href={ref.url}>
                                                     {" "}
                                                     {ref.url}
                                                 </a>
-
                                             </div>
-                                            <img src={ref.imgurl}></img>
+                                            <img src={ref.imgurl} ></img>
                                         </Links>
 
                                     </Arruma>
