@@ -1,14 +1,17 @@
 
 import styled from "styled-components";
-import { useState, useEffect, useRef } from "react";
-import { posttrending, gettrending ,deletepost} from "../request/request";
-import imagem from "../empresa.png";
+import { useState, useEffect } from "react";
+import { posttrending, gettrending ,deletepost,editpost} from "../request/request";
 import TopBar from "../TopBar";
-import { BsHeart, BsHeartFill, BsPencil, BsTrash } from "react-icons/bs";
 import {AiOutlineComment} from "react-icons/ai"
+import { BsHeart, BsHeartFill, BsPencil, BsTrash,BsCheckCircleFill } from "react-icons/bs";
 import axios from "axios"
 import { Tooltip } from 'react-tooltip'
 import BASE_URL from "../constants.js"
+import { useInterval } from 'usehooks-ts'
+import { ReactTagify } from "react-tagify";
+import { useNavigate } from "react-router-dom";
+import TrendingBar from "../TrendingBar";
 
 
 
@@ -23,13 +26,54 @@ export default function Timeline() {
     const [refresh, setrefresh] = useState(true);
     const [liked, setLike] = useState(false);
     const [likesCount, setNumberLikes] = useState(0);
-    const [picture, setPicture] = useState(null);
-    const [user, setuser] = useState(null);
     const [click, setClick] = useState(false);
     const [comment,setComment] = useState("");
     const [allLikes, setAllLikes] = useState("")
     
     console.log(trending)
+    
+    const [picture, setPicture] = useState(null)
+    const [user, setuser] = useState(null)
+    const [checkId, setCheck] = useState('');
+    const [value, setvalue] = useState('');
+    const [newpost,setnewpost] = useState(false);
+    const [qtd,setqtd] = useState(0)
+    const [limit,setlimit] = useState(10)
+    
+    const navigate = useNavigate();
+   
+            
+
+
+    useInterval(()=>  {
+        let answer = gettrending(token);
+    answer.then((res) => {
+       
+        if(res.data[0].id === trending[0].id){
+         
+        }else{
+            setqtd(res.data.indexOf(res.data.filter((ref)=> ref.id == trending[0].id)[0],0))
+            setnewpost(true)
+        }
+       
+    });
+    answer.catch(() =>
+       console.log(
+            "An error ocurred while trying to fetch the posts,please refresh the page"
+        )
+    )},15000)
+
+ function handleCheck(e, id) {
+    e.preventDefault();
+    setCheck(id);
+  }
+
+  
+  const handleChange = (event) => {
+    setvalue(event.target.value);
+    
+  };
+  
 
     useEffect(() => {
         axios.post(`${BASE_URL}/signin`,{}, {headers: {"authorization":`Bearer: ${token}` }})
@@ -43,22 +87,11 @@ export default function Timeline() {
             })
     },[token])
 
-    useEffect(() => {
-        let answer = gettrending(token);
-        answer.then((res) => {
-            
-            settrending(res.data);
-
-        });
-        answer.catch(() =>
-            seterror(
-                "An error ocurred while trying to fetch the posts,please refresh the page"
-            )
-        );
-    }, [refresh]);
+    
 
     useEffect(() => {
-        let answer = gettrending(token);
+      
+        let answer = gettrending(token,limit);
         answer.then((res) => {
             settrending(res.data);
 
@@ -68,7 +101,7 @@ export default function Timeline() {
                 "An error ocurred while trying to fetch the posts,please refresh the page"
             )
         );
-    }, [refresh]);
+    }, [refresh,limit]);
 
     useEffect(()=>{
         const allLikes = axios.get(`${BASE_URL}/timeline/likes`)
@@ -152,9 +185,12 @@ export default function Timeline() {
     //   }
 
     return (
-        <>
+         <>
             <TopBar />
             <Container>
+            <MainContainer>
+                <TrendingBar></TrendingBar>
+            </MainContainer>
                 <Trends>
                     <Tittle>
                         timeline
@@ -174,20 +210,30 @@ export default function Timeline() {
                             </footer>
                         </div>
                     </Publish>
+                    {newpost? <Newpost onClick={()=>{setrefresh(!refresh);setnewpost(false)}}>
+                        <h1>{qtd} new posts, load more!</h1>
+                    </Newpost>:<></>}
+                   
                     <Publications>
                         {trending ? trending.map((ref) => {
                             
                             return (
-                                <Publication>
+                                <Publication key={ref.id}>
 
 
                                     <div><Perfil src={ref.urlpicture} ></Perfil>
 
                                      
                                     </div>
+
                                     {ref.userid === user? <Icons><div onClick={()=> console.log(ref.id)}><BsPencil /></div><div onClick={()=> {if (window.confirm("Tem certeza que deseja excluir este post?") == true) {let del = deletepost(ref.id) ;del.then(setrefresh(!refresh))}}}><BsTrash /></div></Icons> : <></>}
                                     
                                     
+
+                               
+                                    {ref.userid === user? <Icons>{checkId === ref.id? <div onClick={()=>{let sends = editpost(ref.id,value);sends.then(setCheck(''),setrefresh(!refresh),setvalue(""))}}><BsCheckCircleFill /></div> : <div onClick={(e) => handleCheck(e, ref.id)}><BsPencil /></div>}<div onClick={()=> {if (window.confirm("Tem certeza que deseja excluir este post?") == true) {let del = deletepost(ref.id) ;del.then(setrefresh(!refresh))}}}><BsTrash /></div></Icons> : <></>}
+
+
                                     <Like>
                                     <HeartIcon OnClick={() => Like} > {(!liked) ? <BsHeart /> : <BsHeartFill />} </HeartIcon>
                                     <WhoLikes id="postId" data-data-tooltip-content="You liked this">
@@ -209,8 +255,10 @@ export default function Timeline() {
 
                                     <Arruma>
                                         <h1>{ref.name}</h1>
-                                        <h2>{ref.description}</h2>
-                                        <Links>
+                                                                                   
+                                        {checkId === ref.id? <input name="input" type="text" value={value} onChange={handleChange} placeholder={ref.description}  ></input> : <ReactTagify tagStyle={{fontWeight: 600, color: "white"}} tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}><h2>{ref.description? ref.description:""}</h2>  </ReactTagify>}
+                                         
+                                            <Links>
                                             <div>
                                                 <h3>{ref.titulo}</h3>
                                                 <h4>{ref.descricao}</h4>
@@ -234,15 +282,42 @@ export default function Timeline() {
                                 : "There are no post yet"}
 
                     </Publications>
+                  
                 </Trends>
+            
             </Container>
+          
         </>
 
     );
 
 
 }
+const MainContainer = styled.div`
+    display: flex;
+    z-index:-1;
+ `
 
+const Newpost = styled.div`
+background: #1877F2;
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+border-radius: 16px;
+width: 100%;
+display:flex;
+margin-top:40px;
+align-items: center;
+justify-content: center;
+height: 61px;
+h1{
+font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 19px;
+color: #FFFFFF;
+
+}
+`
 const Perfil = styled.img`
     position:absolute;
     width:50px;
@@ -347,6 +422,22 @@ line-height: 20px;
 color: #B7B7B7;
 word-wrap: break-word;
 margin-right:22px;
+}
+input{
+    font-family: 'Lato', sans-serif;
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 20px;
+color: #4C4C4C;
+word-wrap: break-word;
+margin-right:22px;
+background: #FFFFFF;
+border-radius: 7px;
+min-height: 30px;
+width:100%;
+margin-top:10px;
+margin-bottom:10px;
 }
 `
 const Button = styled.button`
