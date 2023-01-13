@@ -1,9 +1,10 @@
 import axios from "axios"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import BASE_URL from "./constants"
 import {DebounceInput} from 'react-debounce-input'
+import userContext from "./userContext"
 
 
 
@@ -15,16 +16,16 @@ export default function TopBar () {
     const [picture, setPicture] = useState(null)
     const [search, setSearch] = useState()
     const [user, setUser] = useState()
+    const [userInfo, setUserInfo] = useContext(userContext)
 
     useEffect(() => {
         axios.post(`${BASE_URL}/signin`,{}, {headers: {"authorization":`Bearer: ${token}` }})
             .then((ans) => {
+                setUserInfo(ans.data)
                 setPicture(ans.data.urlPicture)
             })
             .catch(ans => {
-                alert("Token inválido!")
                 localStorage.removeItem("token")
-                navigate("/")
             })
     },[token, navigate])
 
@@ -47,6 +48,19 @@ export default function TopBar () {
     }
 
     return (
+        (!token) ? 
+        <Bar>
+            <span onClick={()=>navigate("/")}>linkr</span>
+            <Menu>
+                <button onClick={()=>navigate("/")}>
+                    Entrar
+                </button>
+                <button onClick={()=>navigate("/signup")}>
+                    Cadastre-se
+                </button>
+            </Menu>
+        </Bar>
+            :
         <Bar>
             <span onClick={()=>navigate("/timeline")}>linkr</span>
             <SearchBar>
