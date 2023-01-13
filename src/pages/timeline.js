@@ -1,8 +1,7 @@
 
 import styled from "styled-components";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { posttrending, gettrending ,deletepost} from "../request/request";
-import imagem from "../empresa.png";
 import TopBar from "../TopBar";
 import { BsHeart, BsHeartFill, BsPencil, BsTrash } from "react-icons/bs";
 import axios from "axios"
@@ -10,6 +9,7 @@ import { Tooltip } from 'react-tooltip'
 import BASE_URL from "../constants.js"
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
+import TrendingBar from "../TrendingBar";
 
 
 
@@ -119,8 +119,9 @@ export default function Timeline() {
 
 
     return (
-        <>
+        <MainContainer>
             <TopBar />
+            <TrendingBar /> 
             <Container>
                 <Trends>
                     <Tittle>
@@ -172,9 +173,11 @@ export default function Timeline() {
 
                                     <Arruma>
                                         <h1>{ref.name}</h1>
-                                        <ReactTagify gifcolors="white" tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}>
-                                        <h2>{ref.description ? ref.description : ""}</h2>
-                                        </ReactTagify>
+
+                                            <ReactTagify tagStyle={{fontWeight: 600, color: "white"}} tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}>
+                                                <h2>{ref.description ? ref.description : ""}</h2>
+                                            </ReactTagify>
+
                                         <Links>
                                             <div>
                                                 <h3>{ref.titulo}</h3>
@@ -199,13 +202,15 @@ export default function Timeline() {
                     </Publications>
                 </Trends>
             </Container>
-        </>
+        </MainContainer>
 
     );
 
 
 }
-
+const MainContainer = styled.div`
+    display: flex;
+`
 const Perfil = styled.img`
     position:absolute;
     width:50px;

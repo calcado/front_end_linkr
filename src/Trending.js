@@ -1,24 +1,19 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ReactTagify } from "react-tagify";
 import styled from "styled-components";
 import BASE_URL from "./constants.js";
 import TopBar from "./TopBar.js";
+import TrendingBar from "./TrendingBar.js";
 
 export default function Trending() {
     const { hashtag } = useParams();
+    const navigate = useNavigate()
 
-    const [trendingList, setTrendingList] = useState();
     const [feed, setFeed] = useState();
 
-    const navigate = useNavigate();
-
     useEffect(() => {
-        axios
-            .get(`${BASE_URL}/trending`)
-            .then((res) => setTrendingList(res.data))
-            .catch(() => alert("Erro ao carregar o trending"));
-
         axios
             .get(`${BASE_URL}/hashtag/${hashtag}`)
             .then((res) => setFeed(res.data))
@@ -35,90 +30,63 @@ export default function Trending() {
             <Container>
                 <Tittle># {hashtag}</Tittle>
                 <Publications>
-                        {feed
-                            ? feed.map((ref) => {
-                                  return (
-                                      <Publication>
-                                          <Perfil src={"https://encryptedtatic.com/images?q=tbn:ANd9GcRS-bz3w3YbiCPW23zQNWR0sjH7WNZFmCV_6Q&usqp=CAU-tbn0.gs"}/>
-                                          <DisplayFlex>
-                                              <h1>MEU NOME LINDO</h1>
-                                              <h2>{ref.description}</h2>
-                                              <Links>
-                                                  <div>
-                                                      <h3>{ref.titulo}</h3>
-                                                      <h4>{ref.descricao}</h4>
-                                                      <a
-                                                          target="_blank"
-                                                          href={ref.url}
-                                                          rel="noreferrer"
-                                                      >
-                                                          {" "}
-                                                          {ref.url}
-                                                      </a>
-                                                  </div>
-                                                  <img
-                                                      src={ref.imgurl}
-                                                      alt="Url Img"
-                                                  ></img>
-                                              </Links>
-                                          </DisplayFlex>
-                                      </Publication>
-                                  );
-                              })
-                            : "There are no posts yet"}
+                    {feed
+                        ? feed.map((ref) => {
+                              return (
+                                  <Publication>
+                                      <Perfil
+                                          src={
+                                              "https://encryptedtatic.com/images?q=tbn:ANd9GcRS-bz3w3YbiCPW23zQNWR0sjH7WNZFmCV_6Q&usqp=CAU-tbn0.gs"
+                                          }
+                                      />
+                                      <DisplayFlex>
+                                          <h1>{ref.name}</h1>
+
+                                          <ReactTagify
+                                              tagStyle={{
+                                                  fontWeight: 600,
+                                                  color: "white",
+                                              }}
+                                              tagClicked={(tag) =>
+                                                  navigate(
+                                                      `/hashtag/${tag.slice(1)}`
+                                                  )
+                                              }
+                                          >
+                                              <h2>
+                                                  {ref.description
+                                                      ? ref.description
+                                                      : ""}
+                                              </h2>
+                                          </ReactTagify>
+
+                                          <Links>
+                                              <div>
+                                                  <h3>{ref.titulo}</h3>
+                                                  <h4>{ref.descricao}</h4>
+                                                  <a
+                                                      rel="noreferrer"
+                                                      target="_blank"
+                                                      href={ref.url}
+                                                  >
+                                                      {ref.url}
+                                                  </a>
+                                              </div>
+                                              <img src={ref.imgurl} alt = "visual of url" ></img>
+                                          </Links>
+                                      </DisplayFlex>
+                                  </Publication>
+                              );
+                          })
+                        : "There are no posts yet"}
                 </Publications>
             </Container>
-            <TrendingBar>
-                <h2>trending</h2>
-                <div />
-                {trendingList?.map((trend) => (
-                    <li onClick={() => navigate(`/hashtag/${trend.name}`)}>
-                        # {trend.name}
-                    </li>
-                ))}
-            </TrendingBar>
+            <TrendingBar />
         </MainPage>
     );
 }
 const MainPage = styled.div`
     display: flex;
-`;
-const TrendingBar = styled.ul`
-    width: 301px;
-    list-style-type: none;
-    height: 406px;
-    display: flex;
-    flex-direction: column;
-    margin: 78px 0 0 25px;
-    background: #171717;
-    border-radius: 16px;
-    h2 {
-        position: absolute;
-        width: 95px;
-        font-family: "Oswald";
-        font-style: normal;
-        font-weight: bold;
-        font-size: 27px;
-        line-height: 40px;
-        color: #ffffff;
-    }
-    div {
-        height: 1px;
-        background-color: #484848;
-        margin-top: 61px;
-    }
-    li {
-        width: 230px;
-        height: 293px;
-        font-family: "Lato";
-        font-style: normal;
-        font-weight: 700;
-        font-size: 19px;
-        line-height: 23px;
-        letter-spacing: 0.05em;
-        color: #ffffff;
-        overflow: scroll;
-    }
 `;
 const Publications = styled.div`
     margin-top: 28px;
@@ -244,11 +212,10 @@ const Links = styled.footer`
     }
 `;
 const Perfil = styled.img`
-    position:absolute;
-    width:50px;
-    height:50px;
+    position: absolute;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     left: 18px;
     top: 16px;
-
-`
+`;
