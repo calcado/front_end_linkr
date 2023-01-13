@@ -22,8 +22,10 @@ export default function Timeline() {
     const [refresh, setrefresh] = useState(true);
     const [liked, setLike] = useState(false);
     const [likesCount, setNumberLikes] = useState(0);
-    const [picture, setPicture] = useState(null)
-    const [user, setuser] = useState(null)
+    const [picture, setPicture] = useState(null);
+    const [user, setuser] = useState(null);
+    const [click, setClick] = useState(false);
+    const [comment,setComment] = useState("");
     console.log(trending)
 
     useEffect(() => {
@@ -87,33 +89,54 @@ export default function Timeline() {
 
     }
 
-    // function Like() {
-    //     if (liked === false) {
-    //         setLike(true);
-    //         const requisition = axios.post(`${BASE_URL}/timeline/post/:id/likes`);
-    //         requisition.then((response) => {
-    //             setNumberLikes(likesCount + 1);
-    //         });
-    //         requisition.catch((response) => {
+    function Like() {
+        if (liked === false) {
+            setLike(true);
+            const requisition = axios.post(`${BASE_URL}/timeline/post/:id/likes`);
+            requisition.then((response) => {
+                setNumberLikes(likesCount + 1);
+            });
+            requisition.catch((response) => {
             
-    //             console.log(response);
-    //         });
-    //     } else {
-    //         setLike(false);
-    //         const requisition = axios.delete(`${BASE_URL}/timeline/postId`);
-    //         requisition.then((response) => {
-    //             setNumberLikes(likesCount - 1);
-    //         });
-    //         requisition.catch((response) => {
+                console.log(response);
+            });
+        } else {
+            setLike(false);
+            const requisition = axios.delete(`${BASE_URL}/timeline/postId`);
+            requisition.then((response) => {
+                setNumberLikes(likesCount - 1);
+            });
+            requisition.catch((response) => {
               
-    //             console.log(response);
-    //         });
-    //     }
-    //     function WhoLiked() {
-    //         const requisition = axios.get(`${BASE_URL}/timeline/postId/`)
-    //     }
-    // }
+                console.log(response);
+            });
+        }
+        function WhoLiked() {
+            const requisition = axios.get(`${BASE_URL}/timeline/post/:id/likes`);
+            requisition.then((response)=> response.map());
+            requisition.catch((response)=>response.map(response.error))
+        }
+    }
 
+    // function ShowComments(){
+    //     const requisition = axios.get(`${BASE_URL}/timeline/comments/:id`)
+    //     requisition.then((response)=>response.map(() =>
+    //     return(
+    //         <CommentBox>
+    //             <input placeholder="" onChange={e=>{setComment(e.target.value)}} required/>
+    //         </CommentBox>
+    //     )
+    //     );            
+    //     requisition.catch((response)=>response.map(()=>
+    //     console.log(response.error)))
+    //   }
+
+    //   function setComment(){
+    //     const body = comment
+    //     const requisition = axios.post(`${BASE_URL}/timeline/comments/`, body);
+    //     requisition.then(()=>console.log(ok))
+    //     requisition.catch((response)=> response.map(response.error) 
+    //   }
 
     return (
         <>
@@ -151,19 +174,21 @@ export default function Timeline() {
                                     {ref.userid === user? <Icons><div onClick={()=> console.log(ref.id)}><BsPencil /></div><div onClick={()=> {if (window.confirm("Tem certeza que deseja excluir este post?") == true) {let del = deletepost(ref.id) ;del.then(setrefresh(!refresh))}}}><BsTrash /></div></Icons> : <></>}
 
                                     <Like>
-                                    <Icon OnClick={() => Like} > {(!liked) ? <BsHeart /> : <BsHeartFill />} </Icon>
+                                    <HeartIcon OnClick={() => Like} > {(!liked) ? <BsHeart /> : <BsHeartFill />} </HeartIcon>
                                     <WhoLikes id="postId" data-data-tooltip-content="You liked this">
                                         {likesCount} likes
                                     </WhoLikes>
                                    
                                     </Like>
-
-
                                    
+                                    <CommentIcon OnClick={()=> ShowComments()}>
+                                      <AiOutlineComment />
+                                    </CommentIcon>
+
 
                                     {/* <StyledReactToolTip place="bottom" id="usersId">
 
-                                        Você, João e outras {likesCount - 2} pessoas
+                                        Você, João e outras {ref.likesCount } pessoas
 
                                     </StyledReactToolTip> */}
 
@@ -418,7 +443,7 @@ line-height: 64px;
 color: white;
 `
 
-const Icon = styled.button`
+const HeartIcon = styled.button`
 height: 20px;
 margin-bottom:5px;
 width: 20px;
@@ -427,6 +452,16 @@ cursor: pointer;
 top: 86px;
 left: 33px;
 `
+const CommentIcon = styled.button`
+height: 20px;
+margin-bottom:5px;
+width: 20px;
+color: #FFFFFF; 
+cursor: pointer;
+top: 86px;
+left: 33px;
+`
+
 const WhoLikes = styled.div`
 width: 50px;
 height: 13px;
