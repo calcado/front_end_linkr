@@ -104,8 +104,8 @@ export default function Timeline() {
     }, [refresh,limit]);
 
     useEffect(()=>{
-        const allLikes = axios.get(`${BASE_URL}/timeline/likes`)
-        .then(setAllLikes(allLikes))
+        axios.get(`${BASE_URL}/timeline/likes`)
+        .then((res) => setAllLikes(res.data))
         .catch(()=>{
             seterror("An error ocurred while trying to fetch the likes,please refresh the page")
         })
