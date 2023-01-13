@@ -1,43 +1,85 @@
 import axios from "axios";
 import styled from "styled-components";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { json, useParams } from "react-router-dom";
 import BASE_URL from "../constants";
 import TopBar from "../TopBar.js";
+import userContext from "../userContext";
 
 
 
 export function UserPage() {
 
-    const userId = useParams()
-    const [userInfo, setUserInfo] = useState()
+    const userPageId = useParams()
+    const [userPageInfo, setUserPageInfo] = useState()
+    const [userInfo, setUserInfo] = useContext(userContext)
+    const [disable, setDisable] = useState(false)
+    const token = JSON.parse(localStorage.getItem("token"))
 
     useEffect(() => {
-        axios.get(`${BASE_URL}/user/${userId.id}`)
+        axios.get(`${BASE_URL}/user/${userPageId.id}?userId=${userInfo?.userId}`)
             .then((ans) => {
-                setUserInfo(ans.data)
+                setUserPageInfo(ans.data)
             })
             .catch((ans) => {
                 console.log(ans.data)
             })
-    }, [userId])
+    }, [userPageId, userInfo, disable])
+
+    function follow() {
+        setDisable(true)
+        axios.post(`${BASE_URL}/follow/${userPageId.id}`, {}, { headers: { "authorization": `Bearer: ${token}` } })
+            .then((ans) => {
+                setDisable(false)
+            })
+            .catch((ans) => {
+                console.log(ans)
+                setDisable(false)
+            })
+    }
+
+    function unfollow() {
+        setDisable(true)
+        axios.post(`${BASE_URL}/unfollow/${userPageId.id}`, {}, { headers: { "authorization": `Bearer: ${token}` } })
+            .then((ans) => {
+                setDisable(false)
+            })
+            .catch((ans) => {
+                console.log(ans)
+                setDisable(false)
+            })
+    }
 
     return (
         <>
             <TopBar />
             <Container>
                 <Feed>
-                    <UserTitle>
-                        <img src={userInfo?.urlPicture} alt="profile" />
-                        <span>{userInfo?.userName} Posts</span>
+                    <UserTitle userInfo={userInfo} following={userPageInfo?.following} disable={disable}>
+                        <div>
+                            <img src={userPageInfo?.urlPicture} alt="profile" />
+                            <span>{userPageInfo?.userName} Posts</span>
+                        </div>
+                        {(userPageId.id != userInfo?.userId && userPageInfo?.following === false)
+                            &&
+                            <button onClick={() => follow()}>
+                                follow
+                            </button>
+                        }
+                        {(userPageId.id != userInfo?.userId && userPageInfo?.following === true)
+                            &&
+                            <button onClick={()=> unfollow()}>
+                                Unfollow
+                            </button>
+                        }
                     </UserTitle>
-                    {userInfo?.posts && userInfo.posts.map((info, i) => {
+                    {userPageInfo?.posts && userPageInfo.posts.map((info, i) => {
                         return (
                             <Publication key={i}>
-                                <Perfil src={userInfo.urlPicture} />
+                                <Perfil src={userPageInfo.urlPicture} />
                                 <ion-icon name="heart-outline"></ion-icon>
                                 <PostInfo>
-                                    <h1>{userInfo.userName}</h1>
+                                    <h1>{userPageInfo.userName}</h1>
                                     <h2>{info.description}</h2>
                                     <Links>
                                         <div>
@@ -81,6 +123,8 @@ const PostInfo = styled.div`
 `
 
 const UserTitle = styled.div`
+    width: 611px;
+    justify-content: space-between;
     font-family: 'Oswald';
     display: flex;
     align-items: center;
@@ -95,6 +139,13 @@ const UserTitle = styled.div`
         width: 53px;
         height: 53px;
         border-radius: 50%;
+    }
+    button{
+        display: ${props => (props.userInfo) ? 'show' : 'none'};
+        background-color: ${props => (props.following) ? 'white' : '#1877F2'};
+        color: ${props => (props.following) ? '#1877F2' : 'white'};
+        cursor: ${props => (props.disable) ? 'auto' : 'pointer'};
+        pointer-events: ${props => props.disable && 'none'};
     }
 `
 

@@ -1,12 +1,11 @@
 import axios from 'axios';
+import BASE_URL from "../constants"
 
-const BASE_URL = 'http://localhost:5000';
+export function posttrending(body) {
 
-export function posttrending(body, token) {
-
-  const promise = axios.post(`${BASE_URL}/timeline`, body, {headers: {"authorization":`Bearer: ${token}`}});
-  return promise;
-}
+    const promise = axios.post(`${BASE_URL}/timeline`, body);
+    return promise;
+  }
 
 export function gettrending(token) {
 
