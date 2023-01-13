@@ -29,7 +29,7 @@ export default function Timeline() {
     const [value, setvalue] = useState('');
     const [newpost,setnewpost] = useState(false);
     const [qtd,setqtd] = useState(0)
-    const [limit,setlimit] = useState(10)
+    const [limit,setlimit] = useState(200)
 
    
             
@@ -170,6 +170,7 @@ export default function Timeline() {
                     </Newpost>:<></>}
                    
                     <Publications>
+                        
                         {trending ? trending.map((ref) => {
                             return (
                                 <Publication key={ref.id}>
@@ -230,7 +231,7 @@ export default function Timeline() {
                   
                 </Trends>
             </Container>
-            <p id="element" >Loading more posts...</p>
+      
         </>
 
     );
