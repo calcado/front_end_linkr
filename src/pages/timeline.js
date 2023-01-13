@@ -7,6 +7,8 @@ import { BsHeart, BsHeartFill, BsPencil, BsTrash,BsCheckCircleFill } from "react
 import axios from "axios"
 import { Tooltip } from 'react-tooltip'
 import BASE_URL from "../constants.js"
+import { useInterval } from 'usehooks-ts'
+
 
 
 
@@ -25,6 +27,26 @@ export default function Timeline() {
     const [user, setuser] = useState(null)
     const [checkId, setCheck] = useState('');
     const [value, setvalue] = useState('');
+    const [newpost,setnewpost] = useState(false);
+    const [qtd,setqtd] = useState(0)
+
+    useInterval(()=>  {
+        let answer = gettrending(token);
+    answer.then((res) => {
+       
+        if(res.data[0].id === trending[0].id){
+         
+        }else{
+            setqtd(res.data.indexOf(res.data.filter((ref)=> ref.id == trending[0].id)[0],0))
+            setnewpost(true)
+        }
+       
+    });
+    answer.catch(() =>
+       console.log(
+            "An error ocurred while trying to fetch the posts,please refresh the page"
+        )
+    )},15000)
 
  function handleCheck(e, id) {
     e.preventDefault();
@@ -53,19 +75,7 @@ export default function Timeline() {
             })
     },[token])
 
-    useEffect(() => {
-        let answer = gettrending(token);
-        answer.then((res) => {
-            
-            settrending(res.data);
-
-        });
-        answer.catch(() =>
-            seterror(
-                "An error ocurred while trying to fetch the posts,please refresh the page"
-            )
-        );
-    }, [refresh]);
+    
 
     useEffect(() => {
         let answer = gettrending(token);
@@ -153,6 +163,10 @@ export default function Timeline() {
                             </footer>
                         </div>
                     </Publish>
+                    {newpost? <Newpost onClick={()=>{setrefresh(!refresh);setnewpost(false)}}>
+                        <h1>{qtd} new posts, load more!</h1>
+                    </Newpost>:<></>}
+                   
                     <Publications>
                         {trending ? trending.map((ref) => {
                             return (
@@ -218,6 +232,26 @@ export default function Timeline() {
 
 }
 
+const Newpost = styled.div`
+background: #1877F2;
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+border-radius: 16px;
+width: 100%;
+display:flex;
+margin-top:40px;
+align-items: center;
+justify-content: center;
+height: 61px;
+h1{
+font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 19px;
+color: #FFFFFF;
+
+}
+`
 const Perfil = styled.img`
     position:absolute;
     width:50px;
