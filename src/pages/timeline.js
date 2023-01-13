@@ -29,6 +29,11 @@ export default function Timeline() {
     const [value, setvalue] = useState('');
     const [newpost,setnewpost] = useState(false);
     const [qtd,setqtd] = useState(0)
+    const [limit,setlimit] = useState(10)
+
+   
+            
+
 
     useInterval(()=>  {
         let answer = gettrending(token);
@@ -53,11 +58,7 @@ export default function Timeline() {
     setCheck(id);
   }
 
-  function handleUnchecked(e) {
-    e.preventDefault();
-    setCheck('');
-  }
-
+  
   const handleChange = (event) => {
     setvalue(event.target.value);
     
@@ -78,7 +79,8 @@ export default function Timeline() {
     
 
     useEffect(() => {
-        let answer = gettrending(token);
+      
+        let answer = gettrending(token,limit);
         answer.then((res) => {
             settrending(res.data);
 
@@ -88,7 +90,7 @@ export default function Timeline() {
                 "An error ocurred while trying to fetch the posts,please refresh the page"
             )
         );
-    }, [refresh]);
+    }, [refresh,limit]);
 
     function senttrack() {
         setloading(false);
@@ -223,8 +225,10 @@ export default function Timeline() {
                                 : "There are no post yet"}
 
                     </Publications>
+                  
                 </Trends>
             </Container>
+            <p id="element" >Loading more posts...</p>
         </>
 
     );
