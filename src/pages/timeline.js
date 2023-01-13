@@ -26,6 +26,8 @@ export default function Timeline() {
     const [user, setuser] = useState(null);
     const [click, setClick] = useState(false);
     const [comment,setComment] = useState("");
+    const [allLikes, setAllLikes] = useState("")
+    
     console.log(trending)
 
     useEffect(() => {
@@ -67,6 +69,16 @@ export default function Timeline() {
         );
     }, [refresh]);
 
+    useEffect(()=>{
+        const allLikes = axios.get(`${BASE_URL}/timeline/likes`)
+        .then(setAllLikes(allLikes))
+        .catch(()=>{
+            seterror("An error ocurred while trying to fetch the likes,please refresh the page")
+        })
+
+
+    }, [refresh]);
+    
     function senttrack() {
         setloading(false);
         if (!url || url.length < 3) {
@@ -172,7 +184,7 @@ export default function Timeline() {
                                      
                                     </div>
                                     {ref.userid === user? <Icons><div onClick={()=> console.log(ref.id)}><BsPencil /></div><div onClick={()=> {if (window.confirm("Tem certeza que deseja excluir este post?") == true) {let del = deletepost(ref.id) ;del.then(setrefresh(!refresh))}}}><BsTrash /></div></Icons> : <></>}
-
+                                    {ref.user}
                                     <Like>
                                     <HeartIcon OnClick={() => Like} > {(!liked) ? <BsHeart /> : <BsHeartFill />} </HeartIcon>
                                     <WhoLikes id="postId" data-data-tooltip-content="You liked this">
