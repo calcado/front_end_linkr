@@ -146,9 +146,12 @@ export default function Timeline() {
 
 
     return (
-         <MainContainer>
+         <>
             <TopBar />
             <Container>
+            <MainContainer>
+                <TrendingBar></TrendingBar>
+            </MainContainer>
                 <Trends>
                     <Tittle>
                         timeline
@@ -182,7 +185,7 @@ export default function Timeline() {
 
                                      
                                     </div>
-                                    //logica do comentario
+                               
                                     {ref.userid === user? <Icons>{checkId === ref.id? <div onClick={()=>{let sends = editpost(ref.id,value);sends.then(setCheck(''),setrefresh(!refresh),setvalue(""))}}><BsCheckCircleFill /></div> : <div onClick={(e) => handleCheck(e, ref.id)}><BsPencil /></div>}<div onClick={()=> {if (window.confirm("Tem certeza que deseja excluir este post?") == true) {let del = deletepost(ref.id) ;del.then(setrefresh(!refresh))}}}><BsTrash /></div></Icons> : <></>}
 
                                     <Like>
@@ -204,10 +207,9 @@ export default function Timeline() {
 
                                     <Arruma>
                                         <h1>{ref.name}</h1>
-                                         //logica do input
-                                            <ReactTagify tagStyle={{fontWeight: 600, color: "white"}} tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}>
-                                        {checkId === ref.id? <input name="input" type="text" value={value} onChange={handleChange} placeholder={ref.description}  ></input> : <h2>{ref.description}</h2>}
-                                           </ReactTagify>
+                                                                                   
+                                        {checkId === ref.id? <input name="input" type="text" value={value} onChange={handleChange} placeholder={ref.description}  ></input> : <ReactTagify tagStyle={{fontWeight: 600, color: "white"}} tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}><h2>{ref.description? ref.description:""}</h2>  </ReactTagify>}
+                                         
                                             <Links>
                                             <div>
                                                 <h3>{ref.titulo}</h3>
@@ -234,9 +236,10 @@ export default function Timeline() {
                     </Publications>
                   
                 </Trends>
+            
             </Container>
           
-        </MainContainer>
+        </>
 
     );
 
@@ -244,6 +247,7 @@ export default function Timeline() {
 }
 const MainContainer = styled.div`
     display: flex;
+    z-index:-1;
  `
 
 const Newpost = styled.div`
