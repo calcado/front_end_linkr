@@ -1,10 +1,9 @@
 
 import styled from "styled-components";
 import { useState, useEffect, useRef } from "react";
-import { posttrending, gettrending ,deletepost} from "../request/request";
-import imagem from "../empresa.png";
+import { posttrending, gettrending ,deletepost,editpost} from "../request/request";
 import TopBar from "../TopBar";
-import { BsHeart, BsHeartFill, BsPencil, BsTrash } from "react-icons/bs";
+import { BsHeart, BsHeartFill, BsPencil, BsTrash,BsCheckCircleFill } from "react-icons/bs";
 import axios from "axios"
 import { Tooltip } from 'react-tooltip'
 import BASE_URL from "../constants.js"
@@ -24,7 +23,23 @@ export default function Timeline() {
     const [likesCount, setNumberLikes] = useState(0);
     const [picture, setPicture] = useState(null)
     const [user, setuser] = useState(null)
-    console.log(trending)
+    const [checkId, setCheck] = useState('');
+    const [value, setvalue] = useState('');
+
+ function handleCheck(e, id) {
+    e.preventDefault();
+    setCheck(id);
+  }
+
+  function handleUnchecked(e) {
+    e.preventDefault();
+    setCheck('');
+  }
+
+  const handleChange = (event) => {
+    setvalue(event.target.value);
+    
+  };
 
     useEffect(() => {
         axios.post(`${BASE_URL}/signin`,{}, {headers: {"authorization":`Bearer: ${token}` }})
@@ -141,14 +156,14 @@ export default function Timeline() {
                     <Publications>
                         {trending ? trending.map((ref) => {
                             return (
-                                <Publication>
+                                <Publication key={ref.id}>
 
 
                                     <div><Perfil src={ref.urlpicture} ></Perfil>
 
                                      
                                     </div>
-                                    {ref.userid === user? <Icons><div onClick={()=> console.log(ref.id)}><BsPencil /></div><div onClick={()=> {if (window.confirm("Tem certeza que deseja excluir este post?") == true) {let del = deletepost(ref.id) ;del.then(setrefresh(!refresh))}}}><BsTrash /></div></Icons> : <></>}
+                                    {ref.userid === user? <Icons>{checkId === ref.id? <div onClick={()=>{let sends = editpost(ref.id,value);sends.then(setCheck(''),setrefresh(!refresh),setvalue(""))}}><BsCheckCircleFill /></div> : <div onClick={(e) => handleCheck(e, ref.id)}><BsPencil /></div>}<div onClick={()=> {if (window.confirm("Tem certeza que deseja excluir este post?") == true) {let del = deletepost(ref.id) ;del.then(setrefresh(!refresh))}}}><BsTrash /></div></Icons> : <></>}
 
                                     <Like>
                                     <Icon OnClick={() => Like} > {(!liked) ? <BsHeart /> : <BsHeartFill />} </Icon>
@@ -169,7 +184,7 @@ export default function Timeline() {
 
                                     <Arruma>
                                         <h1>{ref.name}</h1>
-                                        <h2>{ref.description}</h2>
+                                        {checkId === ref.id? <input name="input" type="text" value={value} onChange={handleChange} placeholder={ref.description}  ></input> : <h2>{ref.description}</h2>}
                                         <Links>
                                             <div>
                                                 <h3>{ref.titulo}</h3>
@@ -307,6 +322,22 @@ line-height: 20px;
 color: #B7B7B7;
 word-wrap: break-word;
 margin-right:22px;
+}
+input{
+    font-family: 'Lato', sans-serif;
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 20px;
+color: #4C4C4C;
+word-wrap: break-word;
+margin-right:22px;
+background: #FFFFFF;
+border-radius: 7px;
+min-height: 30px;
+width:100%;
+margin-top:10px;
+margin-bottom:10px;
 }
 `
 const Button = styled.button`
