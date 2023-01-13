@@ -104,8 +104,8 @@ export default function Timeline() {
     }, [refresh,limit]);
 
     useEffect(()=>{
-        const allLikes = axios.get(`${BASE_URL}/timeline/likes`)
-        .then(setAllLikes(allLikes))
+        axios.get(`${BASE_URL}/timeline/likes`)
+        .then((res) => setAllLikes(res.data))
         .catch(()=>{
             seterror("An error ocurred while trying to fetch the likes,please refresh the page")
         })
@@ -187,6 +187,7 @@ export default function Timeline() {
     return (
          <>
             <TopBar />
+            <TrendingBar /> 
             <Container>
             <MainContainer>
                 <TrendingBar></TrendingBar>
@@ -261,15 +262,13 @@ export default function Timeline() {
                                             <Links>
                                             <div>
                                                 <h3>{ref.titulo}</h3>
-                                                <h4>{ref.descricao}</h4>
-
+                                                    <h4>{ref.descricao}</h4>
                                                 <a target="_blank" href={ref.url}>
                                                     {" "}
                                                     {ref.url}
                                                 </a>
-
                                             </div>
-                                            <img src={ref.imgurl}></img>
+                                            <img src={ref.imgurl} ></img>
                                         </Links>
 
                                     </Arruma>
