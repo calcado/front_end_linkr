@@ -177,6 +177,7 @@ export default function Timeline() {
 
                                      
                                     </div>
+                                    //logica do comentario
                                     {ref.userid === user? <Icons>{checkId === ref.id? <div onClick={()=>{let sends = editpost(ref.id,value);sends.then(setCheck(''),setrefresh(!refresh),setvalue(""))}}><BsCheckCircleFill /></div> : <div onClick={(e) => handleCheck(e, ref.id)}><BsPencil /></div>}<div onClick={()=> {if (window.confirm("Tem certeza que deseja excluir este post?") == true) {let del = deletepost(ref.id) ;del.then(setrefresh(!refresh))}}}><BsTrash /></div></Icons> : <></>}
 
                                     <Like>
@@ -198,6 +199,7 @@ export default function Timeline() {
 
                                     <Arruma>
                                         <h1>{ref.name}</h1>
+                                         //logica do input
                                         {checkId === ref.id? <input name="input" type="text" value={value} onChange={handleChange} placeholder={ref.description}  ></input> : <h2>{ref.description}</h2>}
                                         <Links>
                                             <div>
