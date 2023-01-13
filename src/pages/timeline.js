@@ -5,6 +5,7 @@ import { posttrending, gettrending ,deletepost} from "../request/request";
 import imagem from "../empresa.png";
 import TopBar from "../TopBar";
 import { BsHeart, BsHeartFill, BsPencil, BsTrash } from "react-icons/bs";
+import {AiOutlineComment} from "react-icons/ai"
 import axios from "axios"
 import { Tooltip } from 'react-tooltip'
 import BASE_URL from "../constants.js"
@@ -78,7 +79,7 @@ export default function Timeline() {
 
 
     }, [refresh]);
-    
+
     function senttrack() {
         setloading(false);
         if (!url || url.length < 3) {
@@ -175,6 +176,7 @@ export default function Timeline() {
                     </Publish>
                     <Publications>
                         {trending ? trending.map((ref) => {
+                            
                             return (
                                 <Publication>
 
@@ -184,7 +186,8 @@ export default function Timeline() {
                                      
                                     </div>
                                     {ref.userid === user? <Icons><div onClick={()=> console.log(ref.id)}><BsPencil /></div><div onClick={()=> {if (window.confirm("Tem certeza que deseja excluir este post?") == true) {let del = deletepost(ref.id) ;del.then(setrefresh(!refresh))}}}><BsTrash /></div></Icons> : <></>}
-                                    {ref.user}
+                                    
+                                    
                                     <Like>
                                     <HeartIcon OnClick={() => Like} > {(!liked) ? <BsHeart /> : <BsHeartFill />} </HeartIcon>
                                     <WhoLikes id="postId" data-data-tooltip-content="You liked this">
@@ -193,7 +196,7 @@ export default function Timeline() {
                                    
                                     </Like>
                                    
-                                    <CommentIcon OnClick={()=> ShowComments()}>
+                                    <CommentIcon OnClick={console.log("oi")}>
                                       <AiOutlineComment />
                                     </CommentIcon>
 
