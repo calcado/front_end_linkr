@@ -1,6 +1,6 @@
 
 import styled from "styled-components";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { posttrending, gettrending ,deletepost,editpost} from "../request/request";
 import TopBar from "../TopBar";
 import { BsHeart, BsHeartFill, BsPencil, BsTrash,BsCheckCircleFill } from "react-icons/bs";
@@ -8,7 +8,9 @@ import axios from "axios"
 import { Tooltip } from 'react-tooltip'
 import BASE_URL from "../constants.js"
 import { useInterval } from 'usehooks-ts'
-
+import { ReactTagify } from "react-tagify";
+import { useNavigate } from "react-router-dom";
+import TrendingBar from "../TrendingBar";
 
 
 
@@ -30,7 +32,8 @@ export default function Timeline() {
     const [newpost,setnewpost] = useState(false);
     const [qtd,setqtd] = useState(0)
     const [limit,setlimit] = useState(10)
-
+    
+    const navigate = useNavigate();
    
             
 
@@ -143,7 +146,7 @@ export default function Timeline() {
 
 
     return (
-        <>
+         <MainContainer>
             <TopBar />
             <Container>
                 <Trends>
@@ -202,8 +205,10 @@ export default function Timeline() {
                                     <Arruma>
                                         <h1>{ref.name}</h1>
                                          //logica do input
+                                            <ReactTagify tagStyle={{fontWeight: 600, color: "white"}} tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}>
                                         {checkId === ref.id? <input name="input" type="text" value={value} onChange={handleChange} placeholder={ref.description}  ></input> : <h2>{ref.description}</h2>}
-                                        <Links>
+                                           </ReactTagify>
+                                            <Links>
                                             <div>
                                                 <h3>{ref.titulo}</h3>
                                                 <h4>{ref.descricao}</h4>
@@ -230,13 +235,16 @@ export default function Timeline() {
                   
                 </Trends>
             </Container>
-            <p id="element" >Loading more posts...</p>
-        </>
+          
+        </MainContainer>
 
     );
 
 
 }
+const MainContainer = styled.div`
+    display: flex;
+ `
 
 const Newpost = styled.div`
 background: #1877F2;
