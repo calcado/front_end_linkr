@@ -1,13 +1,14 @@
 
 import styled from "styled-components";
 import { useState, useEffect, useRef } from "react";
-import { posttrending, gettrending } from "../request/request";
-import imagem from "../empresa.png";
+import { posttrending, gettrending ,deletepost,editpost} from "../request/request";
 import TopBar from "../TopBar";
-import { BsHeart, BsHeartFill, BsPencil, BsTrash } from "react-icons/bs";
+import { BsHeart, BsHeartFill, BsPencil, BsTrash,BsCheckCircleFill } from "react-icons/bs";
 import axios from "axios"
 import { Tooltip } from 'react-tooltip'
 import BASE_URL from "../constants.js"
+import { useInterval } from 'usehooks-ts'
+
 
 
 
@@ -22,11 +23,65 @@ export default function Timeline() {
     const [refresh, setrefresh] = useState(true);
     const [liked, setLike] = useState(false);
     const [likesCount, setNumberLikes] = useState(0);
+    const [picture, setPicture] = useState(null)
+    const [user, setuser] = useState(null)
+    const [checkId, setCheck] = useState('');
+    const [value, setvalue] = useState('');
+    const [newpost,setnewpost] = useState(false);
+    const [qtd,setqtd] = useState(0)
+
+    useInterval(()=>  {
+        let answer = gettrending(token);
+    answer.then((res) => {
+       
+        if(res.data[0].id === trending[0].id){
+         
+        }else{
+            setqtd(res.data.indexOf(res.data.filter((ref)=> ref.id == trending[0].id)[0],0))
+            setnewpost(true)
+        }
+       
+    });
+    answer.catch(() =>
+       console.log(
+            "An error ocurred while trying to fetch the posts,please refresh the page"
+        )
+    )},15000)
+
+ function handleCheck(e, id) {
+    e.preventDefault();
+    setCheck(id);
+  }
+
+  function handleUnchecked(e) {
+    e.preventDefault();
+    setCheck('');
+  }
+
+  const handleChange = (event) => {
+    setvalue(event.target.value);
+    
+  };
+
+    useEffect(() => {
+        axios.post(`${BASE_URL}/signin`,{}, {headers: {"authorization":`Bearer: ${token}` }})
+            .then((ans) => {
+                console.log(ans)
+                setPicture(ans.data.urlPicture);
+                setuser(ans.data.userId)
+            })
+            .catch(ans => {
+                     console.log(ans)                     
+            })
+    },[token])
+
+    
 
     useEffect(() => {
         let answer = gettrending(token);
         answer.then((res) => {
             settrending(res.data);
+
         });
         answer.catch(() =>
             seterror(
@@ -57,32 +112,32 @@ export default function Timeline() {
 
     }
 
-    function Like() {
-        if (liked === false) {
-            setLike(true);
-            const requisition = axios.post(`${BASE_URL}/timeline/post/:id/likes`);
-            requisition.then((response) => {
-                setNumberLikes(likesCount + 1);
-            });
-            requisition.catch((response) => {
-                console.log(response);
-                alert(response);
-            });
-        } else {
-            setLike(false);
-            const requisition = axios.delete(`${BASE_URL}/timeline/postId`);
-            requisition.then((response) => {
-                setNumberLikes(likesCount - 1);
-            });
-            requisition.catch((response) => {
-                console.log(response);
-                alert(response);
-            });
-        }
-        function WhoLiked() {
-            const requisition = axios.get(`${BASE_URL}/timeline/postId/`)
-        }
-    }
+    // function Like() {
+    //     if (liked === false) {
+    //         setLike(true);
+    //         const requisition = axios.post(`${BASE_URL}/timeline/post/:id/likes`);
+    //         requisition.then((response) => {
+    //             setNumberLikes(likesCount + 1);
+    //         });
+    //         requisition.catch((response) => {
+            
+    //             console.log(response);
+    //         });
+    //     } else {
+    //         setLike(false);
+    //         const requisition = axios.delete(`${BASE_URL}/timeline/postId`);
+    //         requisition.then((response) => {
+    //             setNumberLikes(likesCount - 1);
+    //         });
+    //         requisition.catch((response) => {
+              
+    //             console.log(response);
+    //         });
+    //     }
+    //     function WhoLiked() {
+    //         const requisition = axios.get(`${BASE_URL}/timeline/postId/`)
+    //     }
+    // }
 
 
     return (
@@ -94,7 +149,7 @@ export default function Timeline() {
                         timeline
                     </Tittle>
                     <Publish>
-                        <img src={imagem}></img>
+                        <img src={picture}></img>
                         <div>
                             What are you going to share today?
                             <Link value={url ? url : ""} disabled={!loading} onChange={(e) => { seturl(e.target.value) }} placeholder="http://...">
@@ -108,36 +163,42 @@ export default function Timeline() {
                             </footer>
                         </div>
                     </Publish>
+                    {newpost? <Newpost onClick={()=>{setrefresh(!refresh);setnewpost(false)}}>
+                        <h1>{qtd} new posts, load more!</h1>
+                    </Newpost>:<></>}
+                   
                     <Publications>
                         {trending ? trending.map((ref) => {
                             return (
-                                <Publication>
+                                <Publication key={ref.id}>
 
 
-                                    <div><Perfil src={imagem} ></Perfil>
-                                        <Icons><BsTrash /><BsPencil /></Icons>
+                                    <div><Perfil src={ref.urlpicture} ></Perfil>
+
+                                     
                                     </div>
+                                    {ref.userid === user? <Icons>{checkId === ref.id? <div onClick={()=>{let sends = editpost(ref.id,value);sends.then(setCheck(''),setrefresh(!refresh),setvalue(""))}}><BsCheckCircleFill /></div> : <div onClick={(e) => handleCheck(e, ref.id)}><BsPencil /></div>}<div onClick={()=> {if (window.confirm("Tem certeza que deseja excluir este post?") == true) {let del = deletepost(ref.id) ;del.then(setrefresh(!refresh))}}}><BsTrash /></div></Icons> : <></>}
 
-
+                                    <Like>
                                     <Icon OnClick={() => Like} > {(!liked) ? <BsHeart /> : <BsHeartFill />} </Icon>
-
-
-
-
-
                                     <WhoLikes id="postId" data-data-tooltip-content="You liked this">
                                         {likesCount} likes
                                     </WhoLikes>
+                                   
+                                    </Like>
 
-                                    <StyledReactToolTip place="bottom" id="usersId">
+
+                                   
+
+                                    {/* <StyledReactToolTip place="bottom" id="usersId">
 
                                         Você, João e outras {likesCount - 2} pessoas
 
-                                    </StyledReactToolTip>
+                                    </StyledReactToolTip> */}
 
                                     <Arruma>
-                                        <h1>MEU NOME LINDO</h1>
-                                        <h2>{ref.description}</h2>
+                                        <h1>{ref.name}</h1>
+                                        {checkId === ref.id? <input name="input" type="text" value={value} onChange={handleChange} placeholder={ref.description}  ></input> : <h2>{ref.description}</h2>}
                                         <Links>
                                             <div>
                                                 <h3>{ref.titulo}</h3>
@@ -171,6 +232,26 @@ export default function Timeline() {
 
 }
 
+const Newpost = styled.div`
+background: #1877F2;
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+border-radius: 16px;
+width: 100%;
+display:flex;
+margin-top:40px;
+align-items: center;
+justify-content: center;
+height: 61px;
+h1{
+font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 19px;
+color: #FFFFFF;
+
+}
+`
 const Perfil = styled.img`
     position:absolute;
     width:50px;
@@ -180,6 +261,7 @@ const Perfil = styled.img`
     top: 16px;
 
 `
+
 const Arruma = styled.div`
 
     display:flex;
@@ -201,7 +283,7 @@ const Arruma = styled.div`
 const Links = styled.footer`
 display:flex;
 width: 503px;
-height: 155px;
+min-height: 155px;
 border: 1px solid #4D4D4D;
 border-radius: 11px;
 padding-left:19px;
@@ -254,7 +336,7 @@ border-radius: 16px;
 position:relative;
 display:flex;
 padding-right:21px;
-
+word-break: break-word;
 
 h1{
 font-family: 'Lato', sans-serif;
@@ -274,6 +356,22 @@ line-height: 20px;
 color: #B7B7B7;
 word-wrap: break-word;
 margin-right:22px;
+}
+input{
+    font-family: 'Lato', sans-serif;
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 20px;
+color: #4C4C4C;
+word-wrap: break-word;
+margin-right:22px;
+background: #FFFFFF;
+border-radius: 7px;
+min-height: 30px;
+width:100%;
+margin-top:10px;
+margin-bottom:10px;
 }
 `
 const Button = styled.button`
@@ -387,14 +485,12 @@ color: white;
 
 const Icon = styled.button`
 height: 20px;
-
+margin-bottom:5px;
 width: 20px;
 color: ${props => props.liked === false ? "#FFFFFF" : "#AC0000"};
-
 cursor: pointer;
-position: fixed;
-top: 40px;
-left: 16px;
+top: 86px;
+left: 33px;
 `
 const WhoLikes = styled.div`
 width: 50px;
@@ -403,7 +499,6 @@ font-size: 11px;
 color: #FFFFFF;
 font-family: 'Lato',sans-serif;
 
-position: absolute;
 top: 45px;
 
 left: 16px;
@@ -419,7 +514,20 @@ border-radius: 4px;
 `
 
 const Icons = styled.div`
+display:flex;
+width:40px;
+justify-content: space-between;
+position:absolute;
 color: #FFFFFF;
-width: 14px;
-height: 14px;
+right:22px;
+top:23px;
+`
+const Like = styled.div`
+
+left:30px;
+display:flex;
+flex-direction: column;
+position:absolute;
+display:flex;
+top:86px;
 `
