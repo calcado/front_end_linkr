@@ -19,3 +19,9 @@ export function deletepost(id) {
   return promise;
 
 }
+
+export function editpost(id,text) {
+  const promise = axios.patch(`${BASE_URL}/editpost/${id}`, {text});
+  return promise;
+
+}
