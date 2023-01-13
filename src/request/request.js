@@ -7,9 +7,9 @@ export function posttrending(body) {
     return promise;
   }
 
-export function gettrending(token) {
+export function gettrending(token,limit) {
 
-  const promise = axios.get(`${BASE_URL}/timeline`, {headers: {"authorization":`Bearer: ${token}`}});
+  const promise = axios.get(`${BASE_URL}/timeline/${limit}`, {headers: {"authorization":`Bearer: ${token}`}});
   return promise;
 }
 
